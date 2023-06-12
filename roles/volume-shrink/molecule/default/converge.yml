@@ -1,6 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  become: true
 
   environment:
     http_proxy: "{{ lookup('ansible.builtin.env', 'http_proxy') | default(omit) }}"

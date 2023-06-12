@@ -1,1 +1,40 @@
 ---
+- name: update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: install debootstrap
+  ansible.builtin.apt:
+    name: debootstrap
+    state: present
+
+- name: create rootfs folder
+  ansible.builtin.file:
+    path: "{{ volume_shrink_rootfs }}"
+    state: directory
+
+- name: mount tmpfs
+  ansible.builtin.mount:
+    path: "{{ volume_shrink_rootfs }}"
+    src: none
+    fstype: tmpfs
+    state: mounted
+
+- name: create rootfs
+  ansible.builtin.command: debootstrap --variant=minbase bullseye {{ volume_shrink_rootfs }} https://deb.debian.org/debian/
+
+- name: create rootfs dir structure
+  ansible.builtin.file:
+    path: "{{ volume_shrink_rootfs }}/{{ item }}"
+    state: directory
+  loop:
+    - proc
+    - sys
+    - dev
+    - run
+    - usr
+    - var
+    - tmp
+    - oldroot
+

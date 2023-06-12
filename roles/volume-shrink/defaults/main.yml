@@ -1,1 +1,2 @@
 ---
+volume_shrink_rootfs: /rootfs
