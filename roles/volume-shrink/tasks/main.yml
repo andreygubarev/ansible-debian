@@ -52,7 +52,7 @@
   loop: "{{ running_sockets.stdout_lines }}"
 
 - name: list running services
-  ansible.builtin.shell: systemctl | grep running | grep service | awk '{print $1}' | grep -v 'ssh.service'
+  ansible.builtin.shell: systemctl | grep running | grep service | grep -v 'ssh.service' | awk '{print $1}'
   changed_when: false
   register: running_services
 
