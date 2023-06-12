@@ -1,0 +1,26 @@
+namespace: andreygubarev
+name: debian
+version: 1.0.0
+
+readme: README.md
+
+authors:
+  - Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
+
+description: Ansible collection for debian configuration
+license_file: LICENSE
+
+tags: []
+
+dependencies: {}
+
+repository: https://github.com/andreygubarev/ansible-debian
+documentation: https://github.com/andreygubarev/ansible-debian
+homepage: https://github.com/andreygubarev/ansible-debian
+issues: https://github.com/andreygubarev/ansible-debian/issues
+
+build_ignore:
+  - Makefile
+  - .venv
+  - .git
+  - .gitignore
