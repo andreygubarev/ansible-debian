@@ -23,6 +23,8 @@
 
 - name: create rootfs
   ansible.builtin.command: debootstrap --variant=minbase bullseye {{ volume_shrink_rootfs }} https://deb.debian.org/debian/
+  args:
+    creates: "{{ volume_shrink_rootfs }}/bin"
 
 - name: create rootfs dir structure
   ansible.builtin.file:
@@ -38,3 +40,24 @@
     - tmp
     - oldroot
 
+- name: list running sockets
+  ansible.builtin.shell: systemctl | grep running | grep socket | awk '{print $1}'
+  changed_when: false
+  register: running_sockets
+
+- name: stop running sockets
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ running_sockets.stdout_lines }}"
+
+- name: list running services
+  ansible.builtin.shell: systemctl | grep running | grep service | awk '{print $1}' | grep -v 'ssh.service'
+  changed_when: false
+  register: running_services
+
+- name: stop running services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ running_services.stdout_lines }}"
