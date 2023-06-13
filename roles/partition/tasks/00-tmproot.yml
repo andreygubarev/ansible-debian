@@ -85,11 +85,11 @@
 - name: Pivot root and temporary root
   ansible.builtin.shell: |
     set -e
-    touch {{ partition_tmproot }}/var/lock/tmproot
 
     mount --make-rprivate /
     pivot_root {{ partition_tmproot }} {{ partition_tmproot }}/mnt/root
     for i in dev proc sys run; do mount --move /mnt/root/$i /$i; done
+    touch /var/lock/tmproot
 
     apt-get update && apt-get install -yq --no-install-recommends lsof systemd openssh-server python3
     systemctl restart sshd

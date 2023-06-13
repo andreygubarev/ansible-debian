@@ -17,6 +17,7 @@
     mount --make-rprivate /
     pivot_root /mnt/root /mnt/root/{{ partition_tmproot }}
     for i in dev proc sys run; do mount --move {{ partition_tmproot }}/$i /$i; done
+    rm /var/lock/tmproot
 
     systemctl restart sshd
     systemctl daemon-reexec
