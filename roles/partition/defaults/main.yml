@@ -1,4 +1,4 @@
 ---
-partion_device: /dev/vdb
-partion_volume: /dev/vdb1
+partition_device: /dev/vdb
+partition_volume: /dev/vdb1
 

@@ -8,6 +8,6 @@
     https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
 
   tasks:
-    - name: "Include volume-shrink"
+    - name: "Include partition"
       ansible.builtin.include_role:
-        name: "volume-shrink"
+        name: "partition"

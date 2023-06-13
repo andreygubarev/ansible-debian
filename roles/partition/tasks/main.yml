@@ -1,10 +1,10 @@
 ---
-- name: set tmproot state
+- name: Get tmproot state
   ansible.builtin.stat:
     path: /var/lock/tmproot
   register: tmproot
 
-- name: include tmproot
+- name: Setup temporary root
   include_tasks: 00-tmproot.yml
   when: not tmproot.stat.exists
 
