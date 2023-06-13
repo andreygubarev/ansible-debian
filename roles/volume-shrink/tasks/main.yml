@@ -73,3 +73,10 @@
     name: "{{ item }}"
     state: stopped
   loop: "{{ running_timers.stdout_lines }}"
+
+- name: make root private
+  ansible.builtin.shell: |
+    touch /var/lock/mount-root-private
+    mount --make-rprivate /
+  args:
+    creates: /var/lock/mount-root-private
