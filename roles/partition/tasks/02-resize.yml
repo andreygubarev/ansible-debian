@@ -1,0 +1,21 @@
+---
+- name: install fdisk
+  apt:
+    name: fdisk
+    state: present
+    install_recommends: false
+
+- name: Resize /dev/vdb1
+  shell: |
+    resize2fs /dev/vdb1 2G
+    fdisk /dev/vdb <<EOF
+    d
+    1
+    n
+    1
+
+    +2G
+    n
+    w
+    EOF
+

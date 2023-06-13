@@ -1,2 +1,4 @@
 ---
-volume_shrink_rootfs: /rootfs
+partition_device: /dev/vdb
+partition_volume: /dev/vdb1
+

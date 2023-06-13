@@ -1,4 +1,8 @@
 ---
+- name: set tmproot path
+  ansible.builtin.set_fact:
+    partition_temproot: "/mnt/tmproot-{{ partition_volume.replace('/', '-') }}"
+
 - name: update apt cache
   ansible.builtin.apt:
     update_cache: true
