@@ -1,27 +1,27 @@
 ---
-- name: terminate rest processes
+- name: Terminate blocking processes
   ansible.builtin.shell: |
     for i in $(lsof | grep /oldroot | awk '{print $2}' | sort -u); do kill -9 $i; done
   changed_when: false
 
-- name: pause for 5 seconds
+- name: Wait for blocking processes to terminate
   ansible.builtin.pause:
     seconds: 5
 
-- name: unmount oldroot uefi
+- name: Unmount root (efi)
   ansible.builtin.mount:
-    path: "/oldroot/boot/efi"
+    path: /mnt/root/boot/efi
     state: unmounted
   ignore_errors: true
 
-- name: unmount oldroot
+- name: Unmount root
   ansible.builtin.mount:
-    path: "/oldroot"
+    path: /mnt/root
     state: unmounted
   ignore_errors: true
 
-- name: wait for oldroot to be unmounted
+- name: Wait for root to unmount
   ansible.builtin.wait_for:
-    path: /oldroot/bin
+    path: /mnt/root/bin
     state: absent
     timeout: 15

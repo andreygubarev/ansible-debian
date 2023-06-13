@@ -1,4 +1,8 @@
 ---
+- name: Set tmproot path
+  ansible.builtin.set_fact:
+    partition_tmproot: "/mnt/tmproot-{{ partition_volume.replace('/', '-') }}"
+
 - name: Get tmproot state
   ansible.builtin.stat:
     path: /var/lock/tmproot
@@ -8,14 +12,14 @@
   include_tasks: 00-tmproot.yml
   when: not tmproot.stat.exists
 
-- name: set oldroot state
+- name: Get root state
   ansible.builtin.stat:
-    path: /oldroot/bin
-  register: oldroot
+    path: /mnt/root/bin
+  register: root
 
-- name: include unmount
+- name: Unmount root
   include_tasks: 01-unmount.yml
-  when: oldroot.stat.exists
+  when: root.stat.exists
 
 - name: reset tmproot state
   ansible.builtin.stat:
