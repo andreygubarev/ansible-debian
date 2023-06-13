@@ -11,4 +11,16 @@
 - name: include unmount
   include_tasks: 01-unmount.yml
 
+- name: reset tmproot state
+  ansible.builtin.stat:
+    path: /var/lock/tmproot
+  register: tmproot
+
+- name: assert tmproot state
+  ansible.builtin.assert:
+    that:
+      - tmproot.stat.exists
+    fail_msg: "tmproot does not exist"
+    success_msg: "tmproot exists"
+
 - include_tasks: 02-resize.yml
