@@ -15,3 +15,13 @@
     resize2fs {{ partition_volume }} {{ partition_size }}
   register: partition_resize
   changed_when: '"Nothing to do!" not in partition_resize.stderr'
+
+- name: Set partition blocks size
+  ansible.builtin.set_fact:
+    partition_blocks: "{{ (partition_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
+
+- name: Resize partition using sfdisk
+  ansible.builtin.shell: |
+    sfdisk --dump {{ partition_device }} > /tmp/partition.dump
+    sed -i '/{{ partition_volume.replace("/", "\/") }} :/s/size=.*,/size={{ partition_blocks }},/' /tmp/partition.dump
+    sfdisk {{ partition_device }} < /tmp/partition.dump

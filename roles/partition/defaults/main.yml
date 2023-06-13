@@ -1,4 +1,4 @@
 ---
 partition_device: /dev/vdb
 partition_volume: /dev/vdb1
-partition_size: 2G
+partition_size: 3G
