@@ -99,3 +99,14 @@
     systemctl daemon-reexec
   args:
     creates: /var/lock/volume-rootfs-private
+
+- name: unmount oldroot uefi
+  ansible.builtin.mount:
+    path: "{{ volume_shrink_rootfs }}/oldroot/boot/efi"
+    state: unmounted
+  ignore_errors: true
+
+- name: unmount oldroot
+  ansible.builtin.mount:
+    path: "{{ volume_shrink_rootfs }}/oldroot"
+    state: unmounted
