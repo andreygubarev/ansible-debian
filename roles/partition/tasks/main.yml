@@ -26,11 +26,23 @@
     path: /var/lock/tmproot
   register: tmproot
 
-- name: Assert tmproot
+- name: Assert tmproot state
   ansible.builtin.assert:
     that:
       - tmproot.stat.exists
-    fail_msg: "tmproot does not exist"
-    success_msg: "tmproot exists"
+    fail_msg: "temporary root is not mounted"
+    success_msg: "temporary root is mounted"
 
-- include_tasks: 02-resize.yml
+- name: Get root state
+  ansible.builtin.stat:
+    path: /mnt/root/bin
+  register: root
+
+- name: Assert root state
+  ansible.builtin.assert:
+    that:
+      - not root.stat.exists
+    fail_msg: "root is mounted"
+    success_msg: "root is not mounted"
+
+# - include_tasks: 02-resize.yml

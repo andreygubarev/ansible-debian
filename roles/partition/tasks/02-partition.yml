@@ -1,0 +1,6 @@
+---
+- name: Install fdisk
+  ansible.builtin.apt:
+    name: fdisk
+    state: present
+    install_recommends: false
