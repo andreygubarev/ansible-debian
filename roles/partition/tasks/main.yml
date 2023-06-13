@@ -47,3 +47,6 @@
 
 - name: Partition volume
   ansible.builtin.include_tasks: 02-partition.yml
+
+- name: Mount root partition
+  ansible.builtin.include_tasks: 03-mount.yml
