@@ -100,6 +100,14 @@
   args:
     creates: /var/lock/volume-rootfs-private
 
+- name: wait for ssh port
+  wait_for_connection:
+    delay: 5
+    timeout: 60
+
+- name: Reset connection
+  meta: reset_connection
+
 - name: terminate rest processes
   ansible.builtin.shell: |
     for i in $(lsof | grep /oldroot | awk '{print $2}' | sort -u); do kill -9 $i; done
