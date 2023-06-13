@@ -8,6 +8,7 @@
   ansible.builtin.apt:
     name: debootstrap
     state: present
+    install_recommends: false
 
 - name: create rootfs folder
   ansible.builtin.file:
@@ -31,13 +32,13 @@
     path: "{{ volume_shrink_rootfs }}/{{ item }}"
     state: directory
   loop:
-    - proc
-    - sys
     - dev
+    - proc
     - run
+    - sys
+    - tmp
     - usr
     - var
-    - tmp
     - oldroot
 
 - name: list running sockets
