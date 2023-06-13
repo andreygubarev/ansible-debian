@@ -8,8 +8,14 @@
   include_tasks: 00-tmproot.yml
   when: not tmproot.stat.exists
 
+- name: set oldroot state
+  ansible.builtin.stat:
+    path: /oldroot/bin
+  register: oldroot
+
 - name: include unmount
   include_tasks: 01-unmount.yml
+  when: oldroot.stat.exists
 
 - name: reset tmproot state
   ansible.builtin.stat:

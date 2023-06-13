@@ -2,6 +2,7 @@
 - name: terminate rest processes
   ansible.builtin.shell: |
     for i in $(lsof | grep /oldroot | awk '{print $2}' | sort -u); do kill -9 $i; done
+  changed_when: false
 
 - name: pause for 5 seconds
   ansible.builtin.pause:
