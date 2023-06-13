@@ -1,17 +1,9 @@
 ---
 - name: set state
   ansible.builtin.stat:
-    path: /var/lock/volume-rootfs-lock
+    path: /var/lock/volume-rootfs-private
   register: lock_rootfs
 
 - name: include rootfs
   include_tasks: 01-rootfs.yml
   when: not lock_rootfs.stat.exists
-
-# - name: make / private and all of its subdirectories
-#   ansible.builtin.shell: mount --make-rprivate /
-
-# - name: pivot_root
-#   ansible.builtin.shell: pivot_root . oldroot
-#   args:
-#     chdir: "{{ volume_shrink_rootfs }}"

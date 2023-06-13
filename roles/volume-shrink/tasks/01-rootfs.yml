@@ -90,7 +90,12 @@
 
 - name: make root private
   ansible.builtin.shell: |
-    touch /var/lock/mount-root-private
+    touch /var/lock/volume-rootfs-private
     mount --make-rprivate /
+    pivot_root {{ volume_shrink_rootfs }} {{ volume_shrink_rootfs }}/oldroot
+    for i in dev proc sys run; do mount --move /oldroot/$i /$i; done
+    apt-get update && apt-get install -yq --no-install-recommends systemd openssh-server
+    systemctl restart sshd
+    systemctl daemon-reexec
   args:
-    creates: /var/lock/mount-root-private
+    creates: /var/lock/volume-rootfs-private
