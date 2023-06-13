@@ -5,23 +5,41 @@
     state: present
     install_recommends: false
 
+- name: Get current number of blocks in volume
+  ansible.builtin.shell: |
+    dumpe2fs -h {{ partition_volume }} | grep "Block count" | awk '{ print $3 }'
+  register: partition_blocks_current
+
+- name: Set desired number of blocks in volume
+  ansible.builtin.set_fact:
+    partition_blocks_current: "{{ partition_blocks_current.stdout | int }}"
+    partition_blocks_desired: "{{ (partition_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
+
 - name: Run e2fsck
   ansible.builtin.command: |
     e2fsck -y -f {{ partition_volume }}
   changed_when: false
 
-- name: Resize partition file system
+- name: Reduce volume size using resize2fs
   ansible.builtin.command: |
     resize2fs {{ partition_volume }} {{ partition_size }}
   register: partition_resize
   changed_when: '"Nothing to do!" not in partition_resize.stderr'
-
-- name: Set partition blocks size
-  ansible.builtin.set_fact:
-    partition_blocks: "{{ (partition_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
+  when: partition_blocks_current > partition_blocks_desired
 
 - name: Resize partition using sfdisk
   ansible.builtin.shell: |
     sfdisk --dump {{ partition_device }} > /tmp/partition.dump
-    sed -i '/{{ partition_volume.replace("/", "\/") }} :/s/size=.*,/size={{ partition_blocks }},/' /tmp/partition.dump
+    sed -i '/{{ partition_volume.replace("/", "\/") }} :/s/size=.*,/size={{ partition_blocks_desired }},/' /tmp/partition.dump
     sfdisk {{ partition_device }} < /tmp/partition.dump
+
+- name: Grow volume size using resize2fs
+  ansible.builtin.command: |
+    resize2fs {{ partition_volume }}
+  register: partition_resize
+  changed_when: '"Nothing to do!" not in partition_resize.stderr'
+
+- name: Run e2fsck
+  ansible.builtin.command: |
+    e2fsck -y -f {{ partition_volume }}
+  changed_when: false
