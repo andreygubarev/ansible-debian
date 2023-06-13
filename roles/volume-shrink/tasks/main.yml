@@ -74,6 +74,20 @@
     state: stopped
   loop: "{{ running_timers.stdout_lines }}"
 
+- name: create ssh directory
+  ansible.builtin.file:
+    path: "{{ volume_shrink_rootfs }}/root/.ssh"
+    state: directory
+
+- name: copy authorized_keys
+  ansible.builtin.copy:
+    src: /root/.ssh/authorized_keys
+    dest: "{{ volume_shrink_rootfs }}/root/.ssh/authorized_keys"
+    owner: root
+    group: root
+    mode: 0600
+    remote_src: true
+
 - name: make root private
   ansible.builtin.shell: |
     touch /var/lock/mount-root-private
