@@ -1,9 +1,9 @@
 ---
 - name: set state
   ansible.builtin.stat:
-    path: /var/lock/volume-rootfs-private
+    path: "{{ volume_shrink_rootfs }}/var/lock/volume-rootfs-private"
   register: lock_rootfs
 
 - name: include rootfs
-  include_tasks: 01-rootfs.yml
+  include_tasks: 01-unmount.yml
   when: not lock_rootfs.stat.exists
