@@ -112,6 +112,10 @@
   ansible.builtin.shell: |
     for i in $(lsof | grep /oldroot | awk '{print $2}' | sort -u); do kill -9 $i; done
 
+- name: pause for 5 seconds
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: unmount oldroot uefi
   ansible.builtin.mount:
     path: "/oldroot/boot/efi"
@@ -123,14 +127,8 @@
     path: "/oldroot"
     state: unmounted
 
-- name: set state
-  ansible.builtin.stat:
-    path: /oldroot
-  register: state_oldroot
-
-- name: assert absent
-  ansible.builtin.assert:
-    that:
-      - state_oldroot.stat.exists == false
-    fail_msg: "oldroot is still mounted"
-    success_msg: "oldroot is unmounted"
+- name: wait for oldroot to be unmounted
+  ansible.builtin.wait_for:
+    path: /oldroot/bin
+    state: absent
+    timeout: 15
