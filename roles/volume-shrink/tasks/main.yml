@@ -1,11 +1,14 @@
 ---
-- name: set state
+- name: set tmproot state
   ansible.builtin.stat:
-    path: /var/lock/volume-rootfs-private
-  register: lock_rootfs
+    path: /var/lock/tmproot
+  register: tmproot
 
-- name: include rootfs
+- name: include tmproot
+  include_tasks: 00-tmproot.yml
+  when: not tmproot.stat.exists
+
+- name: include unmount
   include_tasks: 01-unmount.yml
-  when: not lock_rootfs.stat.exists
 
 - include_tasks: 02-resize.yml

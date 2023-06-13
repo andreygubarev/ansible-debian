@@ -1,1 +1,3 @@
 ---
+- name: Resize /dev/vdb1
+  command: e2fsck -f /dev/vdb1 && resize2fs /dev/vdb1 8G
