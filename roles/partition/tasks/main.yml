@@ -9,7 +9,7 @@
   register: tmproot
 
 - name: Setup temporary root
-  include_tasks: 00-tmproot.yml
+  ansible.builtin.include_tasks: 00-tmproot.yml
   when: not tmproot.stat.exists
 
 - name: Get root state
@@ -18,15 +18,15 @@
   register: root
 
 - name: Unmount root
-  include_tasks: 01-unmount.yml
+  ansible.builtin.include_tasks: 01-unmount.yml
   when: root.stat.exists
 
-- name: reset tmproot state
+- name: Get tmproot state
   ansible.builtin.stat:
     path: /var/lock/tmproot
   register: tmproot
 
-- name: assert tmproot state
+- name: Assert tmproot
   ansible.builtin.assert:
     that:
       - tmproot.stat.exists
