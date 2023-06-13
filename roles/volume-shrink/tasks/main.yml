@@ -62,3 +62,14 @@
     name: "{{ item }}"
     state: stopped
   loop: "{{ running_services.stdout_lines }}"
+
+- name: list running timers
+  ansible.builtin.shell: systemctl | grep running | grep timer | awk '{print $1}'
+  changed_when: false
+  register: running_timers
+
+- name: stop running timers
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ running_timers.stdout_lines }}"
