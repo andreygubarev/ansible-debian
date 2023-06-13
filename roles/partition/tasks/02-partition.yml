@@ -4,3 +4,14 @@
     name: fdisk
     state: present
     install_recommends: false
+
+- name: Run e2fsck
+  ansible.builtin.command: |
+    e2fsck -y -f {{ partition_volume }}
+  changed_when: false
+
+- name: Resize partition file system
+  ansible.builtin.command: |
+    resize2fs {{ partition_volume }} {{ partition_size }}
+  register: partition_resize
+  changed_when: '"Nothing to do!" not in partition_resize.stderr'

@@ -45,4 +45,5 @@
     fail_msg: "root is mounted"
     success_msg: "root is not mounted"
 
-# - include_tasks: 02-resize.yml
+- name: Partition volume
+  ansible.builtin.include_tasks: 02-partition.yml
