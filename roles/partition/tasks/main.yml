@@ -1,7 +1,7 @@
 ---
 - name: Set tmproot path
   ansible.builtin.set_fact:
-    partition_tmproot: "/mnt/tmproot-{{ partition_volume.replace('/', '-') }}"
+    partition_tmproot: "/mnt/tmproot{{ partition_volume.replace('/', '-') }}"
 
 - name: Get tmproot state
   ansible.builtin.stat:

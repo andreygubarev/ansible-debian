@@ -1,7 +1,7 @@
 ---
 - name: Terminate blocking processes
   ansible.builtin.shell: |
-    for i in $(lsof | grep /oldroot | awk '{print $2}' | sort -u); do kill -9 $i; done
+    for i in $(lsof | grep /mnt/root | awk '{print $2}' | sort -u); do kill -9 $i; done
   changed_when: false
 
 - name: Wait for blocking processes to terminate
@@ -18,7 +18,6 @@
   ansible.builtin.mount:
     path: /mnt/root
     state: unmounted
-  ignore_errors: true
 
 - name: Wait for root to unmount
   ansible.builtin.wait_for:
