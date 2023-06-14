@@ -21,6 +21,8 @@
 
     systemctl restart sshd
     systemctl daemon-reexec
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Wait for SSH connection
@@ -44,6 +46,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     systemctl | grep failed | awk '{ print $2 }' | xargs systemctl restart
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: mount --make-rshared /

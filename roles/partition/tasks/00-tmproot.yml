@@ -53,6 +53,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     systemctl | grep running | grep socket | awk '{print $1}'
+  args:
+    executable: /bin/bash
   changed_when: false
   register: partition_systemd_sockets
 
@@ -66,6 +68,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     systemctl | grep running | grep service | grep -v 'ssh.service' | awk '{print $1}'
+  args:
+    executable: /bin/bash
   changed_when: false
   register: partition_systemd_services
 
@@ -79,6 +83,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     systemctl | grep running | grep timer | awk '{print $1}'
+  args:
+    executable: /bin/bash
   changed_when: false
   register: partition_systemd_timers
 
@@ -100,6 +106,8 @@
     apt-get update && apt-get install -yq --no-install-recommends lsof systemd openssh-server python3
     systemctl restart sshd
     systemctl daemon-reexec
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Wait for SSH connection

@@ -9,6 +9,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     dumpe2fs -h {{ partition_volume }} | grep "Block count" | awk '{ print $3 }'
+  args:
+    executable: /bin/bash
   register: partition_blocks_current
   changed_when: false
 
@@ -35,6 +37,8 @@
     sfdisk --dump {{ partition_device }} > /tmp/partition.dump
     sed -i '/{{ partition_volume.replace("/", "\/") }} :/s/size=.*,/size={{ partition_blocks_desired }},/' /tmp/partition.dump
     sfdisk {{ partition_device }} < /tmp/partition.dump
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Grow volume size using resize2fs

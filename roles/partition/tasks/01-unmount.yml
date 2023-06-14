@@ -3,6 +3,8 @@
   ansible.builtin.shell: |
     set -euo pipefail
     for i in $(lsof | grep /mnt/root | awk '{print $2}' | sort -u); do kill -9 $i; done
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Wait for blocking processes to terminate
