@@ -53,7 +53,8 @@ jobs:
     - name: Build collection
       run: ansible-galaxy collection build --force
 
-    - uses: actions/upload-artifact@v3
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
         name: andreygubarev-debian
         path: *.tar.gz
