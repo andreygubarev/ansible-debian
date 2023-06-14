@@ -50,6 +50,7 @@ jobs:
         set -euxo pipefail
         sed -i "s/^version: .*/version: ${GITHUB_SHA::7}/" galaxy.yml
         if [[ -n "${GITHUB_REF#refs/tags/v}" ]]; then
+          echo "${GITHUB_REF#refs/tags/v}"
           # sed -i "s/^version: .*/version: ${GITHUB_REF#refs\/tags\/v}/" galaxy.yml
         fi
 
