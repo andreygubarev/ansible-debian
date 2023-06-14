@@ -27,7 +27,7 @@ jobs:
         python -m pip install ansible-lint
 
     - name: Lint with ansible-lint
-      run: ansible-lint -v
+      run: ansible-lint --offline --project-dir .
 
   build:
     runs-on: ubuntu-latest
