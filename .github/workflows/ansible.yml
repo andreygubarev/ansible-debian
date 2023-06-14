@@ -48,9 +48,9 @@ jobs:
     - name: Update galaxy.yml version with the new tag if tag is present
       run: |
         sed -i "s/^version: .*/version: ${GITHUB_SHA::7}/" galaxy.yml
-        # if [[ -n "${GITHUB_REF#refs/tags\/v}" ]]; then
-        #   sed -i "s/^version: .*/version: ${GITHUB_REF#refs/tags\/v}/" galaxy.yml
-        # else
+        if [[ -n "${GITHUB_REF#refs/tags/v}" ]]; then
+          sed -i "s/^version: .*/version: ${GITHUB_REF#refs\/tags\/v}/" galaxy.yml
+        fi
 
     - name: Build collection
       run: ansible-galaxy collection build --force
