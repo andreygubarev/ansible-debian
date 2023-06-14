@@ -6,28 +6,28 @@
 - name: Get tmproot state
   ansible.builtin.stat:
     path: /var/lock/tmproot
-  register: tmproot
+  register: partition_state_tmproot
 
 - name: Setup temporary root
   ansible.builtin.include_tasks: 00-tmproot.yml
-  when: not tmproot.stat.exists
+  when: not partition_state_tmproot.stat.exists
 
 - name: Get root state
   ansible.builtin.stat:
     path: /mnt/root/bin
-  register: root
+  register: partition_state_root
 
 - name: Unmount root
   ansible.builtin.include_tasks: 01-unmount.yml
-  when: root.stat.exists
+  when: partition_state_root.stat.exists
 
 - name: Get root state
   ansible.builtin.stat:
     path: /mnt/root/bin
-  register: root
+  register: partition_state_root
 
 - name: Handle root partition
-  when: not root.stat.exists
+  when: not partition_state_root.stat.exists
   block:
     - name: Partition volume
       ansible.builtin.include_tasks: 02-partition.yml

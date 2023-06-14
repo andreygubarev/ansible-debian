@@ -10,7 +10,10 @@ authors:
 description: Ansible collection for debian configuration
 license_file: LICENSE
 
-tags: []
+tags:
+  - cloud
+  - linux
+  - storage
 
 dependencies: {}
 

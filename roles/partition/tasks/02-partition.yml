@@ -7,8 +7,10 @@
 
 - name: Get current number of blocks in volume
   ansible.builtin.shell: |
+    set -euo pipefail
     dumpe2fs -h {{ partition_volume }} | grep "Block count" | awk '{ print $3 }'
   register: partition_blocks_current
+  changed_when: false
 
 - name: Set desired number of blocks in volume
   ansible.builtin.set_fact:
@@ -29,9 +31,11 @@
 
 - name: Resize partition using sfdisk
   ansible.builtin.shell: |
+    set -euo pipefail
     sfdisk --dump {{ partition_device }} > /tmp/partition.dump
     sed -i '/{{ partition_volume.replace("/", "\/") }} :/s/size=.*,/size={{ partition_blocks_desired }},/' /tmp/partition.dump
     sfdisk {{ partition_device }} < /tmp/partition.dump
+  changed_when: false
 
 - name: Grow volume size using resize2fs
   ansible.builtin.command: |
