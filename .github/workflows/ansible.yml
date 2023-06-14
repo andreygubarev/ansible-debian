@@ -1,11 +1,6 @@
-name: Ansible Galaxy Publish
+name: Ansible Collection
 
-on:
-  push:
-    branches:
-      - "main"
-    tags:
-      - "v*.*.*"
+on: [push]
 
 permissions:
   contents: read
