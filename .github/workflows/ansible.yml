@@ -57,7 +57,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: andreygubarev-debian
-        path: *.tar.gz
+        path: '*.tar.gz'
 
   publish:
     runs-on: ubuntu-latest
