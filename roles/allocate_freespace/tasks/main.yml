@@ -4,14 +4,14 @@
     update_cache: true
   changed_when: false
 
-- name: Install fdisk utility if not present
+- name: Install utilities if not present
   ansible.builtin.apt:
     name:
       - fdisk
       - parted
     state: present
 
-- name: Read device information (always use unit when probing)
+- name: Read device information
   community.general.parted:
     device: "{{ allocate_freespace_device }}"
     unit: MB
