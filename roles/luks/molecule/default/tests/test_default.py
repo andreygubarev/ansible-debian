@@ -1,10 +1,10 @@
 """Role testing files using testinfra."""
 
 
-def test_hosts_file(host):
-    """Validate /etc/hosts file."""
-    f = host.file("/etc/hosts")
+def test_luks_installed(host):
+    """Check if luks is installed."""
+    assert host.package("cryptsetup").is_installed
 
-    assert f.exists
-    assert f.user == "root"
-    assert f.group == "root"
+def test_luks_mounted(host):
+    """Check if luks is mounted."""
+    assert host.mount_point("/mnt/local").exists
