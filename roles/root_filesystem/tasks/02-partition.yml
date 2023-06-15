@@ -11,16 +11,16 @@
     fdisk -l {{ root_filesystem_partition }} | grep 'Disk' | awk '{ print $7 }'
   args:
     executable: /bin/bash
-  register: root_filesystem_blocks_current
+  register: root_filesystem_sectors_current
   changed_when: false
 
 - name: Set desired number of blocks in volume
   ansible.builtin.set_fact:
-    root_filesystem_blocks_current: "{{ root_filesystem_blocks_current.stdout | int }}"
-    root_filesystem_blocks_desired: "{{ (root_filesystem_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
+    root_filesystem_sectors_current: "{{ root_filesystem_sectors_current.stdout | int }}"
+    root_filesystem_sectors_desired: "{{ (root_filesystem_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
 
 - name: Reduce volume size
-  when: root_filesystem_blocks_current | int > root_filesystem_blocks_desired | int
+  when: root_filesystem_sectors_current | int > root_filesystem_sectors_desired | int
   block:
   - name: Run e2fsck
     ansible.builtin.command: |
@@ -37,7 +37,7 @@
   ansible.builtin.shell: |
     set -euo pipefail
     sfdisk --dump {{ root_filesystem_device }} > /tmp/partition.dump
-    sed -i '/{{ root_filesystem_partition.replace("/", "\/") }} :/s/size=.*,/size={{ root_filesystem_blocks_desired }},/' /tmp/partition.dump
+    sed -i '/{{ root_filesystem_partition.replace("/", "\/") }} :/s/size=.*,/size={{ root_filesystem_sectors_desired }},/' /tmp/partition.dump
     sfdisk {{ root_filesystem_device }} < /tmp/partition.dump
   args:
     executable: /bin/bash
