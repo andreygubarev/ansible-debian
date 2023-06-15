@@ -17,6 +17,10 @@
     unit: MB
   register: allocate_freespace_device_info
 
+- name: Print device information
+  ansible.builtin.debug:
+    msg: "{{ allocate_freespace_device_info }}"
+
 - name: Calculate the available contiguous free space
   ansible.builtin.set_fact:
     allocate_freespace_space_available: "{{ (allocate_freespace_device_info.disk.size - allocate_freespace_device_info.partitions[-1]['end']) | round(2, 'floor') }}"
@@ -27,7 +31,7 @@
     - name: Create a new partition using fdisk
       ansible.builtin.shell: |
         set -euo pipefail
-        echo -e "n\n\n\n\nw" | fdisk /dev/vdb | grep 'Created a new partition' | awk '{print $5}'
+        echo -e "n\n\n\n\nw" | fdisk {{ allocate_freespace_device }} | grep 'Created a new partition' | awk '{print $5}'
       changed_when: true
       register: allocate_freespace_partition
       args:
