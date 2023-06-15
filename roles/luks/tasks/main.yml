@@ -57,9 +57,19 @@
     dev: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
 
+- name: Check LUKS volume mountpoint
+  ansible.builtin.shell: |
+    set -euo pipefail
+    mountpoint -q {{ luks_mountpoint }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: luks_state_mountpoint
+
 - name: Mount LUKS volume
   ansible.posix.mount:
     src: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
     path: "{{ luks_mountpoint }}"
     state: ephemeral
+  when: luks_state_mountpoint.rc != 0
