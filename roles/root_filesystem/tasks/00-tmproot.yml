@@ -16,7 +16,7 @@
     path: "{{ root_filesystem_tmproot }}"
     src: none
     fstype: tmpfs
-    state: mounted
+    state: ephemeral
 
 - name: Bootstrap tmproot
   ansible.builtin.command: |
