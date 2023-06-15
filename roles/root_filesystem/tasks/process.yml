@@ -1,0 +1,36 @@
+---
+- name: Set tmproot path
+  ansible.builtin.set_fact:
+    root_filesystem_tmproot: "/mnt/tmproot{{ root_filesystem_partition.replace('/', '-') }}"
+
+- name: Get tmproot state
+  ansible.builtin.stat:
+    path: /var/lock/tmproot
+  register: root_filesystem_state_tmproot
+
+- name: Setup temporary root
+  ansible.builtin.include_tasks: 00-tmproot.yml
+  when: not root_filesystem_state_tmproot.stat.exists
+
+- name: Get root state
+  ansible.builtin.stat:
+    path: /mnt/root/bin
+  register: root_filesystem_state_root
+
+- name: Unmount root
+  ansible.builtin.include_tasks: 01-unmount.yml
+  when: root_filesystem_state_root.stat.exists
+
+- name: Get root state
+  ansible.builtin.stat:
+    path: /mnt/root/bin
+  register: root_filesystem_state_root
+
+- name: Handle root partition
+  when: not root_filesystem_state_root.stat.exists
+  block:
+    - name: Partition volume
+      ansible.builtin.include_tasks: 02-partition.yml
+
+    - name: Mount root partition
+      ansible.builtin.include_tasks: 03-mount.yml

@@ -1,9 +1,4 @@
 ---
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-  changed_when: false
-
 - name: Install debootstrap
   ansible.builtin.apt:
     name: debootstrap
@@ -103,7 +98,7 @@
     for i in dev proc sys run; do mount --move /mnt/root/$i /$i; done
     touch /var/lock/tmproot
 
-    apt-get update && apt-get install -yq --no-install-recommends lsof systemd openssh-server python3
+    apt-get update && apt-get install -yq --no-install-recommends fdisk lsof systemd openssh-server python3
     systemctl restart sshd
     systemctl daemon-reexec
   args:
