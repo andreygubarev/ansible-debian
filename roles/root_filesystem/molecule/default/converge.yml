@@ -8,6 +8,6 @@
     https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
 
   tasks:
-    - name: "Include partition"
+    - name: "Include root_filesystem"
       ansible.builtin.include_role:
-        name: "partition"
+        name: "root_filesystem"

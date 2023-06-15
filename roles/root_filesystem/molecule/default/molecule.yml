@@ -14,8 +14,8 @@ provisioner:
   inventory:
     host_vars:
       debian-bullseye-arm64:
-        partition_device: /dev/vdb
-        partition_volume: /dev/vdb1
-        partition_size: 2G
+        root_filesystem_device: /dev/vdb
+        root_filesystem_partition: /dev/vdb1
+        root_filesystem_size: 2G
 verifier:
   name: testinfra

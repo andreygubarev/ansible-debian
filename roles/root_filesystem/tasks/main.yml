@@ -2,42 +2,42 @@
 - name: Assert inventory variables
   ansible.builtin.assert:
     that:
-      - partition_device is defined
-      - partition_device is match('^/dev/\w+$')
-      - partition_volume is defined
-      - partition_volume is match('^/dev/\w+$')
-      - partition_size is defined
-      - partition_size is match('^\d+G$')
+      - root_filesystem_device is defined
+      - root_filesystem_device is match('^/dev/\w+$')
+      - root_filesystem_partition is defined
+      - root_filesystem_partition is match('^/dev/\w+$')
+      - root_filesystem_size is defined
+      - root_filesystem_size is match('^\d+G$')
 
 - name: Set tmproot path
   ansible.builtin.set_fact:
-    partition_tmproot: "/mnt/tmproot{{ partition_volume.replace('/', '-') }}"
+    root_filesystem_tmproot: "/mnt/tmproot{{ root_filesystem_partition.replace('/', '-') }}"
 
 - name: Get tmproot state
   ansible.builtin.stat:
     path: /var/lock/tmproot
-  register: partition_state_tmproot
+  register: root_filesystem_state_tmproot
 
 - name: Setup temporary root
   ansible.builtin.include_tasks: 00-tmproot.yml
-  when: not partition_state_tmproot.stat.exists
+  when: not root_filesystem_state_tmproot.stat.exists
 
 - name: Get root state
   ansible.builtin.stat:
     path: /mnt/root/bin
-  register: partition_state_root
+  register: root_filesystem_state_root
 
 - name: Unmount root
   ansible.builtin.include_tasks: 01-unmount.yml
-  when: partition_state_root.stat.exists
+  when: root_filesystem_state_root.stat.exists
 
 - name: Get root state
   ansible.builtin.stat:
     path: /mnt/root/bin
-  register: partition_state_root
+  register: root_filesystem_state_root
 
 - name: Handle root partition
-  when: not partition_state_root.stat.exists
+  when: not root_filesystem_state_root.stat.exists
   block:
     - name: Partition volume
       ansible.builtin.include_tasks: 02-partition.yml

@@ -12,26 +12,26 @@
 
 - name: Create tmproot directory
   ansible.builtin.file:
-    path: "{{ partition_tmproot }}"
+    path: "{{ root_filesystem_tmproot }}"
     state: directory
     mode: 0755
 
 - name: Mount tmproot
   ansible.posix.mount:
-    path: "{{ partition_tmproot }}"
+    path: "{{ root_filesystem_tmproot }}"
     src: none
     fstype: tmpfs
     state: mounted
 
 - name: Bootstrap tmproot
   ansible.builtin.command: |
-    debootstrap --variant=minbase bullseye {{ partition_tmproot }} https://deb.debian.org/debian/
+    debootstrap --variant=minbase bullseye {{ root_filesystem_tmproot }} https://deb.debian.org/debian/
   args:
-    creates: "{{ partition_tmproot }}/bin"
+    creates: "{{ root_filesystem_tmproot }}/bin"
 
 - name: Create tmproot mountpoints
   ansible.builtin.file:
-    path: "{{ partition_tmproot }}/{{ item }}"
+    path: "{{ root_filesystem_tmproot }}/{{ item }}"
     state: directory
     mode: 0755
   loop:
@@ -43,7 +43,7 @@
 - name: Copy ssh keys
   ansible.builtin.copy:
     src: /root/.ssh/authorized_keys
-    dest: "{{ partition_tmproot }}/root/.ssh/authorized_keys"
+    dest: "{{ root_filesystem_tmproot }}/root/.ssh/authorized_keys"
     owner: root
     group: root
     mode: 0600
@@ -56,13 +56,13 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: partition_systemd_sockets
+  register: root_filesystem_systemd_sockets
 
 - name: Stop systemd running sockets
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
-  loop: "{{ partition_systemd_sockets.stdout_lines }}"
+  loop: "{{ root_filesystem_systemd_sockets.stdout_lines }}"
 
 - name: Get systemd running services
   ansible.builtin.shell: |
@@ -71,13 +71,13 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: partition_systemd_services
+  register: root_filesystem_systemd_services
 
 - name: Stop systemd running services
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
-  loop: "{{ partition_systemd_services.stdout_lines }}"
+  loop: "{{ root_filesystem_systemd_services.stdout_lines }}"
 
 - name: Get systemd running timers
   ansible.builtin.shell: |
@@ -86,20 +86,20 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: partition_systemd_timers
+  register: root_filesystem_systemd_timers
 
 - name: Stop systemd running timers
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
-  loop: "{{ partition_systemd_timers.stdout_lines }}"
+  loop: "{{ root_filesystem_systemd_timers.stdout_lines }}"
 
 - name: Pivot root and temporary root
   ansible.builtin.shell: |
     set -euo pipefail
 
     mount --make-rprivate /
-    pivot_root {{ partition_tmproot }} {{ partition_tmproot }}/mnt/root
+    pivot_root {{ root_filesystem_tmproot }} {{ root_filesystem_tmproot }}/mnt/root
     for i in dev proc sys run; do mount --move /mnt/root/$i /$i; done
     touch /var/lock/tmproot
 
