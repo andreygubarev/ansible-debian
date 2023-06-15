@@ -1,0 +1,3 @@
+---
+allocate_freespace_device:
+allocate_freespace_space_minimal: 8  # MB

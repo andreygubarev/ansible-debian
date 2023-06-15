@@ -1,0 +1,38 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install utilities if not present
+  ansible.builtin.apt:
+    name:
+      - fdisk
+      - parted
+    state: present
+
+- name: Read device information
+  community.general.parted:
+    device: "{{ allocate_freespace_device }}"
+    unit: MB
+  register: allocate_freespace_device_info
+
+- name: Calculate the available contiguous free space
+  ansible.builtin.set_fact:
+    allocate_freespace_space_available: "{{ (allocate_freespace_device_info.disk.size - allocate_freespace_device_info.partitions[-1]['end']) | round(2, 'floor') }}"
+
+- name: Create a new partition
+  when: allocate_freespace_space_available | int > allocate_freespace_space_minimal | int
+  block:
+    - name: Create a new partition using fdisk
+      ansible.builtin.shell: |
+        set -euo pipefail
+        echo -e "n\n\n\n\nw" | fdisk /dev/vdb | grep 'Created a new partition' | awk '{print $5}'
+      changed_when: true
+      register: allocate_freespace_partition
+      args:
+        executable: /bin/bash
+
+    - name: Print the new partition information
+      ansible.builtin.debug:
+        msg: "Created a new partition: {{ allocate_freespace_device }}{{ allocate_freespace_partition.stdout }}"
