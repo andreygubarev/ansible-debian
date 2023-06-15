@@ -4,7 +4,7 @@
     path: /mnt/root
     src: "{{ root_filesystem_partition }}"
     fstype: ext4
-    state: mounted
+    state: ephemeral
     opts: defaults
   become: true
   become_user: root
