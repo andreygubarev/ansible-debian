@@ -20,6 +20,6 @@ provisioner:
         allocate_freespace_device: /dev/vdb
         lvm_physical_volume: /dev/vdb2
         luks_device: /dev/mapper/vg0-lv0
-        luks_password: password
+        luks_device_passphrase: password
 verifier:
   name: testinfra

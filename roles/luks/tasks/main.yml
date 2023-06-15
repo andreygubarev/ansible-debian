@@ -12,10 +12,10 @@
 
 - name: Create LUKS key
   ansible.builtin.shell: |
-    dd if=/dev/urandom of={{ luks_key }} bs=1 count=256
-    chmod 0400 {{ luks_key }}
+    dd if=/dev/urandom of={{ luks_device_key }} bs=1 count=256
+    chmod 0400 {{ luks_device_key }}
   args:
-    creates: "{{ luks_key }}"
+    creates: "{{ luks_device_key }}"
   register: luks_state_key
 
 - name: Set LUKS key state
@@ -25,7 +25,7 @@
 - name: Encrypt with LUKS
   ansible.builtin.shell: |
     set -euo pipefail
-    echo -n "{{ luks_password }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_key }} {{ luks_device }}
+    echo -n "{{ luks_device_passphrase }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_device_key }} {{ luks_device }}
   args:
     executable: /bin/bash
   no_log: true
@@ -44,7 +44,7 @@
 - name: Open LUKS volume
   ansible.builtin.shell: |
     set -euo pipefail
-    echo -n "{{ luks_password }}" | cryptsetup luksOpen --key-file {{ luks_key }} {{ luks_device }} {{ luks_name }}
+    echo -n "{{ luks_device_passphrase }}" | cryptsetup luksOpen --key-file {{ luks_device_key }} {{ luks_device }} {{ luks_name }}
   args:
     executable: /bin/bash
   no_log: true
