@@ -61,3 +61,8 @@
     src: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
     state: mounted
+
+- name: Add encrypted volume entry to /etc/crypttab
+  lineinfile:
+    dest: /etc/crypttab
+    line: '{{ luks_volume_name }} {{ luks_device }} none luks'
