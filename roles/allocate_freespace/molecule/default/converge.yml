@@ -7,6 +7,6 @@
     https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
 
   tasks:
-    - name: "Include freespace_allocation"
+    - name: "Include allocate_freespace"
       ansible.builtin.include_role:
-        name: "freespace_allocation"
+        name: "allocate_freespace"

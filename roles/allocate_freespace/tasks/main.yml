@@ -13,26 +13,26 @@
 
 - name: Read device information (always use unit when probing)
   community.general.parted:
-    device: "{{ freespace_allocation_device }}"
+    device: "{{ allocate_freespace_device }}"
     unit: MB
-  register: freespace_allocation_device_info
+  register: allocate_freespace_device_info
 
 - name: Calculate the available contiguous free space
   ansible.builtin.set_fact:
-    freespace_allocation_space_available: "{{ (freespace_allocation_device_info.disk.size - freespace_allocation_device_info.partitions[-1]['end']) | round(2, 'floor') }}"
+    allocate_freespace_space_available: "{{ (allocate_freespace_device_info.disk.size - allocate_freespace_device_info.partitions[-1]['end']) | round(2, 'floor') }}"
 
 - name: Create a new partition
-  when: freespace_allocation_space_available | int > freespace_allocation_space_minimal | int
+  when: allocate_freespace_space_available | int > allocate_freespace_space_minimal | int
   block:
     - name: Create a new partition using fdisk
       ansible.builtin.shell: |
         set -euo pipefail
         echo -e "n\n\n\n\nw" | fdisk /dev/vdb | grep 'Created a new partition' | awk '{print $5}'
       changed_when: true
-      register: freespace_allocation_partition
+      register: allocate_freespace_partition
       args:
         executable: /bin/bash
 
     - name: Print the new partition information
       ansible.builtin.debug:
-        msg: "Created a new partition: {{ freespace_allocation_device }}{{ freespace_allocation_partition.stdout }}"
+        msg: "Created a new partition: {{ allocate_freespace_device }}{{ allocate_freespace_partition.stdout }}"
