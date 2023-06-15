@@ -43,3 +43,7 @@
     lv: "{{ lvm_logical_volume }}"
     size: "{{ lvm_logical_volume_size }}"
     state: present
+
+- name: Print LV info
+  ansible.builtin.debug:
+    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ lvm_logical_volume }}"
