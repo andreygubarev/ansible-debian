@@ -8,7 +8,7 @@
 - name: Get current number of blocks in volume
   ansible.builtin.shell: |
     set -euo pipefail
-    dumpe2fs -h {{ partition_volume }} | grep "Block count" | awk '{ print $3 }'
+    fdisk -l {{ partition_volume }} | grep 'Disk' | awk '{ print $7 }'
   args:
     executable: /bin/bash
   register: partition_blocks_current
