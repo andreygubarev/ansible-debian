@@ -60,10 +60,4 @@
     src: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
     path: "{{ luks_mountpoint }}"
-    state: mounted
-    opts: rw,nofail,noatime,discard,noauto
-
-- name: Add encrypted volume entry to /etc/crypttab
-  ansible.builtin.lineinfile:
-    dest: /etc/crypttab
-    line: '{{ luks_volume_name }} {{ luks_device }} none luks'
+    state: ephemeral
