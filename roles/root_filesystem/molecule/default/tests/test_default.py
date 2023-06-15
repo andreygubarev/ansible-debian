@@ -1,10 +1,9 @@
 """Role testing files using testinfra."""
 
 
-def test_hosts_file(host):
-    """Validate /etc/hosts file."""
-    f = host.file("/etc/hosts")
+def test_root_filesystem(host):
+    """Validate root filesystem."""
+    dev = host.block_device("/dev/vdb1")
 
-    assert f.exists
-    assert f.user == "root"
-    assert f.group == "root"
+    assert dev.is_partition
+    assert dev.size == 2 * 1024 * 1024 * 1024
