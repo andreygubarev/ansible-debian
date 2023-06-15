@@ -38,7 +38,7 @@
   changed_when: false
 
 - name: Set LUKS state
-  set_fact:
+  ansible.builtin.set_fact:
     luks_state_device: "{{ luks_state_device.stat.exists | bool }}"
 
 - name: Open LUKS volume
@@ -52,17 +52,18 @@
 
 - name: Create filesystem on LUKS volume
   community.general.filesystem:
-    fstype: "{{ luks_filesystem }}"
     dev: "/dev/mapper/{{ luks_volume_name }}"
+    fstype: "{{ luks_filesystem }}"
 
 - name: Mount LUKS volume
-  mount:
-    path: "{{ luks_mountpoint }}"
+  ansible.posix.mount:
     src: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
+    path: "{{ luks_mountpoint }}"
     state: mounted
+    opts: rw,nofail,noatime,discard,noauto
 
 - name: Add encrypted volume entry to /etc/crypttab
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/crypttab
     line: '{{ luks_volume_name }} {{ luks_device }} none luks'
