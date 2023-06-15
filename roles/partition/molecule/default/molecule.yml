@@ -11,5 +11,11 @@ platforms:
     vm_network: vmnet-shared
 provisioner:
   name: ansible
+  inventory:
+    host_vars:
+      debian-bullseye-arm64:
+        partition_device: /dev/vdb
+        partition_volume: /dev/vdb1
+        partition_size: 2G
 verifier:
   name: testinfra
