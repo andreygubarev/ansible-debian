@@ -38,8 +38,13 @@
     path: "{{ partition_tmproot }}"
     state: unmounted
 
-- name: Mount all defined filesystems  # noqa: command-instead-of-module
-  ansible.builtin.command: mount -a
+- name: Mount present filesystems
+  ansible.builtin.shell: |
+    set -euo pipefail
+    mount -a
+    mount --make-rshared /
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Restart systemd failed service  # noqa: command-instead-of-module
@@ -49,9 +54,6 @@
   args:
     executable: /bin/bash
   changed_when: false
-
-- name: mount --make-rshared /
-  ansible.builtin.commmand: mount --make-rshared /
 
 - name: Start systemd services  # noqa: command-instead-of-module
   ansible.builtin.command: systemctl isolate default.target

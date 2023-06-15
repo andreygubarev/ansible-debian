@@ -19,17 +19,19 @@
     partition_blocks_current: "{{ partition_blocks_current.stdout | int }}"
     partition_blocks_desired: "{{ (partition_size.replace('G', '') | int * 1024 * 1024 * 1024 / 512) | int }}"
 
-- name: Run e2fsck
-  ansible.builtin.command: |
-    e2fsck -y -f {{ partition_volume }}
-  changed_when: false
+- name: Reduce volume size
+  when: partition_blocks_current | int > partition_blocks_desired | int
+  block:
+  - name: Run e2fsck
+    ansible.builtin.command: |
+      e2fsck -y -f {{ partition_volume }}
+    changed_when: false
 
-- name: Reduce volume size using resize2fs
-  ansible.builtin.command: |
-    resize2fs {{ partition_volume }} {{ partition_size }}
-  register: partition_resize
-  changed_when: '"Nothing to do!" not in partition_resize.stderr'
-  when: partition_blocks_current > partition_blocks_desired
+  - name: Reduce volume size using resize2fs
+    ansible.builtin.command: |
+      resize2fs {{ partition_volume }} {{ partition_size }}
+    register: partition_resize
+    changed_when: '"Nothing to do!" not in partition_resize.stderr'
 
 - name: Resize partition using sfdisk
   ansible.builtin.shell: |
