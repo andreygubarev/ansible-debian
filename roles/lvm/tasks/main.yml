@@ -9,3 +9,13 @@
     name: lvm2
     state: present
     install_recommends: false
+
+- name: Check if PV exists
+  command: pvs {{ lvm_device }} --noheadings
+  register: lvm_pvs
+  failed_when: false
+  changed_when: false
+
+- name: Create PV
+  command: pvcreate {{ lvm_device }}
+  when: lvm_pvs.rc != 0
