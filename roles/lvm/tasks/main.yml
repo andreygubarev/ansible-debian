@@ -10,14 +10,26 @@
     state: present
     install_recommends: false
 
+- name: Check if PV device exists
+  ansible.builtin.command: lsblk {{ lvm_physical_volume }}
+  register: lvm_physical_volume_device
+  failed_when: false
+  changed_when: false
+
+- name: Assert PV device exists
+  ansible.builtin.assert:
+    that:
+      - lvm_physical_volume_device.rc == 0
+
 - name: Check if PV exists
-  command: pvs {{ lvm_physical_volume }} --noheadings
+  ansible.builtin.command: pvs {{ lvm_physical_volume }} --noheadings
   register: lvm_pvs
   failed_when: false
   changed_when: false
 
 - name: Create PV
-  command: pvcreate {{ lvm_physical_volume }}
+  ansible.builtin.command: pvcreate {{ lvm_physical_volume }}
+  changed_when: false
   when: lvm_pvs.rc != 0
 
 - name: Create VG
