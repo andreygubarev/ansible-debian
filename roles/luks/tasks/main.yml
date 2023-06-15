@@ -1,1 +1,63 @@
 ---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install LUKS
+  ansible.builtin.apt:
+    name: cryptsetup
+    state: present
+    install_recommends: false
+
+- name: Create LUKS key
+  ansible.builtin.shell: |
+    dd if=/dev/urandom of={{ luks_key }} bs=1 count=256
+    chmod 0400 {{ luks_key }}
+  args:
+    creates: "{{ luks_key }}"
+  register: luks_state_key
+
+- name: Set LUKS state
+  set_fact:
+    luks_state_key: "{{ luks_state_key is not changed }}"
+
+- name: Encrypt with LUKS
+  ansible.builtin.shell: |
+    set -euo pipefail
+    echo -n "{{ luks_password }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_key }} {{ luks_device }}
+  args:
+    executable: /bin/bash
+  no_log: true
+  when: not luks_state_key
+
+- name: Check LUKS device
+  stat:
+    path: "/dev/mapper/{{ luks_name }}"
+  register: luks_state_device
+  changed_when: false
+
+- name: Set LUKS state
+  set_fact:
+    luks_state_device: "{{ luks_state_device.stat.exists | bool }}"
+
+- name: Open LUKS volume
+  ansible.builtin.shell: |
+    set -euo pipefail
+    echo -n "{{ luks_password }}" | cryptsetup luksOpen --key-file {{ luks_key }} {{ luks_device }} {{ luks_name }}
+  args:
+    executable: /bin/bash
+  no_log: true
+  when: not luks_state_device
+
+- name: Create filesystem on LUKS volume
+  community.general.filesystem:
+    fstype: "{{ luks_filesystem }}"
+    dev: "/dev/mapper/{{ luks_name }}"
+
+- name: Mount LUKS volume
+  mount:
+    path: "{{ luks_mountpoint }}"
+    src: "/dev/mapper/{{ luks_name }}"
+    fstype: "{{ luks_filesystem }}"
+    state: mounted

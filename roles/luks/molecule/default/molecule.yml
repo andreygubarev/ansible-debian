@@ -19,5 +19,7 @@ provisioner:
         root_filesystem_size: 2G
         allocate_freespace_device: /dev/vdb
         lvm_physical_volume: /dev/vdb2
+        luks_device: /dev/mapper/vg0-lv0
+        luks_password: password
 verifier:
   name: testinfra

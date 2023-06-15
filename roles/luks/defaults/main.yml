@@ -1,1 +1,7 @@
 ---
+luks_device:
+luks_password:
+luks_name: luks0
+luks_key: "/root/{{ luks_name }}.key"
+luks_mountpoint: /mnt/local
+luks_filesystem: ext4
