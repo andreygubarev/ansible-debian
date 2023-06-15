@@ -11,18 +11,14 @@
       - parted
     state: present
 
-- debug:
-    var: freespace_allocation_space_available.stdout
-
 - name: Read device information (always use unit when probing)
   community.general.parted:
     device: "{{ freespace_allocation_device }}"
     unit: MB
   register: freespace_allocation_device_info
 
-
 - name: Calculate the available contiguous free space
-  set_fact:
+  ansible.builtin.set_fact:
     freespace_allocation_space_available: "{{ (freespace_allocation_device_info.disk.size - freespace_allocation_device_info.partitions[-1]['end']) | round(2, 'floor')  }}"
 
 - name: "Assert that free space is greater than {{ freespace_allocation_space_required }}MB"
