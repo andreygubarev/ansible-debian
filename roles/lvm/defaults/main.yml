@@ -1,0 +1,5 @@
+---
+lvm_physical_volume:
+lvm_volume_group: vg0
+lvm_logical_volume: lv0
+lvm_logical_volume_size: 100%VG

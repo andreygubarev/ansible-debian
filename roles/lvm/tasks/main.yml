@@ -1,0 +1,49 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install LVM
+  ansible.builtin.apt:
+    name: lvm2
+    state: present
+    install_recommends: false
+
+- name: Check if PV device exists
+  ansible.builtin.command: lsblk {{ lvm_physical_volume }}
+  register: lvm_physical_volume_device
+  failed_when: false
+  changed_when: false
+
+- name: Assert PV device exists
+  ansible.builtin.assert:
+    that:
+      - lvm_physical_volume_device.rc == 0
+
+- name: Check if PV exists
+  ansible.builtin.command: pvs {{ lvm_physical_volume }} --noheadings
+  register: lvm_pvs
+  failed_when: false
+  changed_when: false
+
+- name: Create PV
+  ansible.builtin.command: pvcreate {{ lvm_physical_volume }}
+  changed_when: false
+  when: lvm_pvs.rc != 0
+
+- name: Create VG
+  community.general.lvg:
+    vg: "{{ lvm_volume_group }}"
+    pvs: "{{ lvm_physical_volume }}"
+
+- name: Create LV
+  community.general.lvol:
+    vg: "{{ lvm_volume_group }}"
+    lv: "{{ lvm_logical_volume }}"
+    size: "{{ lvm_logical_volume_size }}"
+    state: present
+
+- name: Print LV info
+  ansible.builtin.debug:
+    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ lvm_logical_volume }}"
