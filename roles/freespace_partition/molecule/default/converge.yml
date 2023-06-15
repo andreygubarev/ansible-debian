@@ -7,6 +7,6 @@
     https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
 
   tasks:
-    - name: "Include parted"
+    - name: "Include freespace_partition"
       ansible.builtin.include_role:
-        name: "parted"
+        name: "freespace_partition"

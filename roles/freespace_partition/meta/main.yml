@@ -1,6 +1,6 @@
 galaxy_info:
   author: Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
-  description: Ansible role for creation of new partition using free space
+  description: Ansible role for creating partition using free disk space
   company: andreygubarev
 
   license: MIT
