@@ -1,1 +1,26 @@
 ---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install parted utility if not present
+  apt:
+    name: parted
+    state: present
+
+- name: Read device information (always use unit when probing)
+  community.general.parted:
+    device: "{{ parted_device }}"
+    unit: B
+  register: parted_device_info
+
+- debug:
+    var: parted_device_info
+
+- name: Create new partition using all available free space
+  community.general.parted:
+    device: "{{ parted_device }}"
+    number: "{{ parted_device_info.partitions | length + 1 }}"
+    state: present
+    part_start: "{{ parted_device_info.partitions[-1]['end'] + 1 }}B"
