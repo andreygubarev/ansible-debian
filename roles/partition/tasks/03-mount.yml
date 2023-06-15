@@ -45,7 +45,7 @@
 - name: Restart systemd failed service  # noqa: command-instead-of-module
   ansible.builtin.shell: |
     set -euo pipefail
-    systemctl | grep failed | awk '{ print $2 }' | xargs systemctl restart
+    systemctl | ( grep 'failed' || true ) | awk '{ print $2 }' | xargs systemctl restart
   args:
     executable: /bin/bash
   changed_when: false

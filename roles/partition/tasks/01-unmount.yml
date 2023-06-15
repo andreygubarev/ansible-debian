@@ -2,7 +2,7 @@
 - name: Terminate blocking processes
   ansible.builtin.shell: |
     set -euo pipefail
-    for i in $(lsof | grep /mnt/root | awk '{print $2}' | sort -u); do kill -9 $i; done
+    for i in $(lsof | ( grep '/mnt/root' || true ) | awk '{print $2}' | sort -u); do kill -9 $i; done
   args:
     executable: /bin/bash
   changed_when: false

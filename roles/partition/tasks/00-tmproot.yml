@@ -52,7 +52,7 @@
 - name: Get systemd running sockets
   ansible.builtin.shell: |
     set -euo pipefail
-    systemctl | grep running | grep socket | awk '{print $1}'
+    systemctl | ( grep 'running' || true ) | ( grep 'socket' || true ) | awk '{print $1}'
   args:
     executable: /bin/bash
   changed_when: false
@@ -67,7 +67,7 @@
 - name: Get systemd running services
   ansible.builtin.shell: |
     set -euo pipefail
-    systemctl | grep running | grep service | grep -v 'ssh.service' | awk '{print $1}'
+    systemctl | ( grep 'running' || true ) | ( grep 'service' || true ) | grep -v 'ssh.service' | awk '{print $1}'
   args:
     executable: /bin/bash
   changed_when: false
@@ -82,7 +82,7 @@
 - name: Get systemd running timers
   ansible.builtin.shell: |
     set -euo pipefail
-    systemctl | grep running | grep timer | awk '{print $1}'
+    systemctl | ( grep 'running' || true ) | ( grep 'timer' || true ) | awk '{print $1}'
   args:
     executable: /bin/bash
   changed_when: false
