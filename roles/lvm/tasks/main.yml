@@ -11,19 +11,19 @@
     install_recommends: false
 
 - name: Check if PV exists
-  command: pvs {{ lvm_device }} --noheadings
+  command: pvs {{ lvm_physical_volume }} --noheadings
   register: lvm_pvs
   failed_when: false
   changed_when: false
 
 - name: Create PV
-  command: pvcreate {{ lvm_device }}
+  command: pvcreate {{ lvm_physical_volume }}
   when: lvm_pvs.rc != 0
 
 - name: Create VG
   community.general.lvg:
     vg: "{{ lvm_volume_group }}"
-    pvs: "{{ lvm_device }}"
+    pvs: "{{ lvm_physical_volume }}"
 
 - name: Create LV
   community.general.lvol:
