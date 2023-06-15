@@ -11,3 +11,7 @@
     - name: "Include root_filesystem"
       ansible.builtin.include_role:
         name: "root_filesystem"
+
+    - name: "Include allocate_freespace"
+      ansible.builtin.include_role:
+        name: "allocate_freespace"
