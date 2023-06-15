@@ -1,0 +1,9 @@
+---
+luks_device:
+
+luks_volume_name: luks0
+luks_volume_key: "/root/{{ luks_volume_name }}.key"
+luks_volume_passphrase:
+
+luks_mountpoint: /mnt/local
+luks_filesystem: ext4
