@@ -19,7 +19,7 @@
   register: luks_state_key
 
 - name: Set LUKS key state
-  set_fact:
+  ansible.builtin.set_fact:
     luks_state_key: "{{ luks_state_key is not changed }}"
 
 - name: Encrypt with LUKS
@@ -28,11 +28,12 @@
     echo -n "{{ luks_volume_passphrase }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_volume_key }} {{ luks_device }}
   args:
     executable: /bin/bash
+  changed_when: false
   no_log: true
   when: not luks_state_key
 
 - name: Check LUKS volume
-  stat:
+  ansible.builtin.stat:
     path: "/dev/mapper/{{ luks_volume_name }}"
   register: luks_state_device
   changed_when: false
@@ -46,6 +47,7 @@
     set -euo pipefail
     echo -n "{{ luks_volume_passphrase }}" | cryptsetup luksOpen --key-file {{ luks_volume_key }} {{ luks_device }} {{ luks_volume_name }}
   args:
+    creates: "/dev/mapper/{{ luks_volume_name }}"
     executable: /bin/bash
   no_log: true
   when: not luks_state_device
