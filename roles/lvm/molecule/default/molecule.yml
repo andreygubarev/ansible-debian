@@ -18,5 +18,6 @@ provisioner:
         root_filesystem_partition: /dev/vdb1
         root_filesystem_size: 2G
 
+        lvm_device: /dev/vdb
 verifier:
   name: testinfra
