@@ -21,9 +21,17 @@
   ansible.builtin.set_fact:
     freespace_allocation_space_available: "{{ (freespace_allocation_device_info.disk.size - freespace_allocation_device_info.partitions[-1]['end']) | round(2, 'floor')  }}"
 
-- name: "Assert that free space is greater than {{ freespace_allocation_space_required }}MB"
-  ansible.builtin.assert:
-    that:
-      - freespace_allocation_space_available | int > freespace_allocation_space_required | int
-    fail_msg: "Not enough free space on {{ freespace_allocation_device }} to create a partition"
-    success_msg: "Enough free space on {{ freespace_allocation_device }} to create a partition"
+- name: Create a new partition
+  when: freespace_allocation_space_available | int > freespace_allocation_space_minimal | int
+  block:
+    - name: Create a new partition using fdisk
+      ansible.builtin.shell: |
+        set -euo pipefail
+        echo -e "n\n\n\n\nw" | fdisk /dev/vdb | grep 'Created a new partition' | awk '{print $5}'
+      register: freespace_allocation_partition
+      args:
+        executable: /bin/bash
+
+    - name: Print the new partition information
+      debug:
+        msg: "Created a new partition: {{ freespace_allocation_device }}{{ freespace_allocation_partition.stdout }}"
