@@ -19,3 +19,15 @@
 - name: Create PV
   command: pvcreate {{ lvm_device }}
   when: lvm_pvs.rc != 0
+
+- name: Create VG
+  community.general.lvg:
+    vg: "{{ lvm_volume_group }}"
+    pvs: "{{ lvm_device }}"
+
+- name: Create LV
+  community.general.lvol:
+    vg: "{{ lvm_volume_group }}"
+    lv: "{{ lvm_logical_volume }}"
+    size: "{{ lvm_logical_volume_size }}"
+    state: present

@@ -19,6 +19,6 @@ provisioner:
         root_filesystem_size: 2G
         allocate_freespace_device: /dev/vdb2
 
-        lvm_device: /dev/vdb
+        lvm_device: /dev/vdb2
 verifier:
   name: testinfra

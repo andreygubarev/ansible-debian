@@ -1,2 +1,5 @@
 ---
 lvm_device:
+lvm_volume_group: vg1
+lvm_logical_volume: lv1
+lvm_logical_volume_size: 100%VG
