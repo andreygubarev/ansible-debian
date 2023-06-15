@@ -18,7 +18,7 @@
     creates: "{{ luks_key }}"
   register: luks_state_key
 
-- name: Set LUKS state
+- name: Set LUKS key state
   set_fact:
     luks_state_key: "{{ luks_state_key is not changed }}"
 
@@ -31,7 +31,7 @@
   no_log: true
   when: not luks_state_key
 
-- name: Check LUKS device
+- name: Check LUKS volume
   stat:
     path: "/dev/mapper/{{ luks_name }}"
   register: luks_state_device
