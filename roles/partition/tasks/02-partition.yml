@@ -41,13 +41,13 @@
     executable: /bin/bash
   changed_when: false
 
+- name: Run e2fsck
+  ansible.builtin.command: |
+    e2fsck -y -f {{ partition_volume }}
+  changed_when: false
+
 - name: Grow volume size using resize2fs
   ansible.builtin.command: |
     resize2fs {{ partition_volume }}
   register: partition_resize
   changed_when: '"Nothing to do!" not in partition_resize.stderr'
-
-- name: Run e2fsck
-  ansible.builtin.command: |
-    e2fsck -y -f {{ partition_volume }}
-  changed_when: false
