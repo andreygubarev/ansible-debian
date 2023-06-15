@@ -1,1 +1,11 @@
 ---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install LVM
+  ansible.builtin.apt:
+    name: lvm2
+    state: present
+    install_recommends: false
