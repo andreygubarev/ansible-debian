@@ -12,10 +12,10 @@
 
 - name: Create LUKS key
   ansible.builtin.shell: |
-    dd if=/dev/urandom of={{ luks_device_key }} bs=1 count=256
-    chmod 0400 {{ luks_device_key }}
+    dd if=/dev/urandom of={{ luks_volume_key }} bs=1 count=256
+    chmod 0400 {{ luks_volume_key }}
   args:
-    creates: "{{ luks_device_key }}"
+    creates: "{{ luks_volume_key }}"
   register: luks_state_key
 
 - name: Set LUKS key state
@@ -25,7 +25,7 @@
 - name: Encrypt with LUKS
   ansible.builtin.shell: |
     set -euo pipefail
-    echo -n "{{ luks_device_passphrase }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_device_key }} {{ luks_device }}
+    echo -n "{{ luks_volume_passphrase }}" | cryptsetup luksFormat --batch-mode --key-file {{ luks_volume_key }} {{ luks_device }}
   args:
     executable: /bin/bash
   no_log: true
@@ -33,7 +33,7 @@
 
 - name: Check LUKS volume
   stat:
-    path: "/dev/mapper/{{ luks_name }}"
+    path: "/dev/mapper/{{ luks_volume_name }}"
   register: luks_state_device
   changed_when: false
 
@@ -44,7 +44,7 @@
 - name: Open LUKS volume
   ansible.builtin.shell: |
     set -euo pipefail
-    echo -n "{{ luks_device_passphrase }}" | cryptsetup luksOpen --key-file {{ luks_device_key }} {{ luks_device }} {{ luks_name }}
+    echo -n "{{ luks_volume_passphrase }}" | cryptsetup luksOpen --key-file {{ luks_volume_key }} {{ luks_device }} {{ luks_volume_name }}
   args:
     executable: /bin/bash
   no_log: true
@@ -53,11 +53,11 @@
 - name: Create filesystem on LUKS volume
   community.general.filesystem:
     fstype: "{{ luks_filesystem }}"
-    dev: "/dev/mapper/{{ luks_name }}"
+    dev: "/dev/mapper/{{ luks_volume_name }}"
 
 - name: Mount LUKS volume
   mount:
     path: "{{ luks_mountpoint }}"
-    src: "/dev/mapper/{{ luks_name }}"
+    src: "/dev/mapper/{{ luks_volume_name }}"
     fstype: "{{ luks_filesystem }}"
     state: mounted
