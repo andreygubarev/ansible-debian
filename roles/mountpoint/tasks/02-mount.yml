@@ -1,31 +1,31 @@
 ---
 - name: Create filesystem on volume
   community.general.filesystem:
-    dev: "{{ lvm_mountpoint_volume }}"
-    fstype: "{{ lvm_mountpoint_filesystem }}"
+    dev: "{{ mountpoint_volume }}"
+    fstype: "{{ mountpoint_filesystem }}"
 
 - name: Move mountpoint path to temporary location
-  ansible.builtin.command: mv {{ lvm_mountpoint_path }} {{ lvm_mountpoint_path }}.bak
+  ansible.builtin.command: mv {{ mountpoint_path }} {{ mountpoint_path }}.bak
   args:
-    creates: "{{ lvm_mountpoint_path }}.bak"
+    creates: "{{ mountpoint_path }}.bak"
 
 - name: Mount volume
   ansible.posix.mount:
-    path: "{{ lvm_mountpoint_path }}"
-    src: "{{ lvm_mountpoint_volume }}"
+    path: "{{ mountpoint_path }}"
+    src: "{{ mountpoint_volume }}"
     fstype: ext4
     state: mounted
     opts: defaults
 
 - name: Sync remote backup to new mountpoint
   ansible.posix.synchronize:
-    src: "{{ lvm_mountpoint_path }}.bak/"
-    dest: "{{ lvm_mountpoint_path }}/"
+    src: "{{ mountpoint_path }}.bak/"
+    dest: "{{ mountpoint_path }}/"
     delete: true
     recursive: true
   delegate_to: "{{ inventory_hostname }}"
 
 - name: Delete temporary location
   ansible.builtin.file:
-    path: "{{ lvm_mountpoint_path }}.bak"
+    path: "{{ mountpoint_path }}.bak"
     state: absent

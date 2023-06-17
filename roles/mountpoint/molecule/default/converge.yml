@@ -7,6 +7,6 @@
     https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
 
   tasks:
-    - name: "Include lvm_mountpoint"
+    - name: "Include mountpoint"
       ansible.builtin.include_role:
-        name: "lvm_mountpoint"
+        name: "mountpoint"
