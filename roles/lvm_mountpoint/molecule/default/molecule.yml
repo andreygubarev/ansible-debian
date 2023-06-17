@@ -23,9 +23,8 @@ provisioner:
         lvm_logical_volumes:
           - name: var
             size: 1G
-          - name: tmp
-            size: 1G
-          - name: home
-            size: 2G
+        lvm_mountpoint_path: /var
+        lvm_mountpoint_volume: /dev/mapper/vg0-var
+
 verifier:
   name: testinfra
