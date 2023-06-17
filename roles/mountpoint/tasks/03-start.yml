@@ -1,0 +1,12 @@
+---
+- name: Restart systemd failed service  # noqa: command-instead-of-module
+  ansible.builtin.shell: |
+    set -euo pipefail
+    systemctl | ( grep 'failed' || true ) | awk '{ print $2 }' | xargs -r systemctl restart
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Start systemd services  # noqa: command-instead-of-module
+  ansible.builtin.command: systemctl isolate default.target
+  changed_when: false

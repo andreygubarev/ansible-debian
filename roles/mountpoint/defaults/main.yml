@@ -1,0 +1,4 @@
+---
+mountpoint_path:
+mountpoint_volume:
+mountpoint_filesystem: ext4

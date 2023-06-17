@@ -1,0 +1,45 @@
+---
+- name: Get systemd running sockets
+  ansible.builtin.shell: |
+    set -euo pipefail
+    systemctl | ( grep 'running' || true ) | ( grep 'socket' || true ) | awk '{print $1}'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: root_filesystem_systemd_sockets
+
+- name: Stop systemd running sockets
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ root_filesystem_systemd_sockets.stdout_lines }}"
+
+- name: Get systemd running services
+  ansible.builtin.shell: |
+    set -euo pipefail
+    systemctl | ( grep 'running' || true ) | ( grep 'service' || true ) | ( grep -v 'ssh.service' || true ) | awk '{print $1}'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: root_filesystem_systemd_services
+
+- name: Stop systemd running services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ root_filesystem_systemd_services.stdout_lines }}"
+
+- name: Get systemd running timers
+  ansible.builtin.shell: |
+    set -euo pipefail
+    systemctl | ( grep 'running' || true ) | ( grep 'timer' || true ) | awk '{print $1}'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: root_filesystem_systemd_timers
+
+- name: Stop systemd running timers
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ root_filesystem_systemd_timers.stdout_lines }}"

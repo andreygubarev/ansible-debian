@@ -1,0 +1,29 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install utilities if not present
+  ansible.builtin.apt:
+    name: rsync
+    state: present
+    install_recommends: false
+
+- name: Check if mountpoint exists
+  ansible.builtin.command: mountpoint -q {{ mountpoint_path }}
+  changed_when: false
+  ignore_errors: true
+  register: mountpoint_state
+
+- name: Creat mountpoint
+  when: mountpoint_state.rc != 0
+  block:
+    - name: Include tasks that stop services
+      ansible.builtin.include_tasks: 01-stop.yml
+
+    - name: Mount volume
+      ansible.builtin.include_tasks: 02-mount.yml
+
+    - name: Include tasks that start services
+      ansible.builtin.include_tasks: 03-start.yml

@@ -24,3 +24,7 @@
     - name: "Include allocate_freespace"
       ansible.builtin.include_role:
         name: "allocate_freespace"
+
+    - name: "Include lvm"
+      ansible.builtin.include_role:
+        name: "lvm"

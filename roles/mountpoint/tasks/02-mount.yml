@@ -1,0 +1,39 @@
+---
+- name: Create filesystem on volume
+  community.general.filesystem:
+    dev: "{{ mountpoint_volume }}"
+    fstype: "{{ mountpoint_filesystem }}"
+
+- name: Check if mountpoint exists
+  ansible.builtin.stat:
+    path: "{{ mountpoint_path }}"
+  register: mountpoint_exists
+
+- name: Move mountpoint path to temporary location
+  ansible.builtin.command: mv {{ mountpoint_path }} {{ mountpoint_path }}.bak
+  args:
+    creates: "{{ mountpoint_path }}.bak"
+  when: mountpoint_exists.stat.exists
+
+- name: Mount volume
+  ansible.posix.mount:
+    path: "{{ mountpoint_path }}"
+    src: "{{ mountpoint_volume }}"
+    fstype: ext4
+    state: mounted
+    opts: defaults
+
+- name: Sync remote backup to new mountpoint
+  ansible.posix.synchronize:
+    src: "{{ mountpoint_path }}.bak/"
+    dest: "{{ mountpoint_path }}/"
+    delete: true
+    recursive: true
+  delegate_to: "{{ inventory_hostname }}"
+  when: mountpoint_exists.stat.exists
+
+- name: Delete temporary location
+  ansible.builtin.file:
+    path: "{{ mountpoint_path }}.bak"
+    state: absent
+  when: mountpoint_exists.stat.exists

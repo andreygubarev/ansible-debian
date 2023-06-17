@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
+  description: Ansible role that migrates existing folder into LVM logical volume
+  company: andreygubarev
+
+  license: MIT
+
+  min_ansible_version: '7.0.0'
+
+  platforms: []
+  # platforms:
+  # - name: Ubuntu
+  #   versions:
+  #   - focal
+
+  galaxy_tags: []
+
+dependencies: []
