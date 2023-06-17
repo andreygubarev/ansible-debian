@@ -10,7 +10,7 @@
     creates: "{{ lvm_mountpoint_path }}.bak"
 
 - name: Mount volume
-  ansible.builtin.mount:
+  ansible.posix.mount:
     path: "{{ lvm_mountpoint_path }}"
     src: "{{ lvm_mountpoint_volume }}"
     fstype: ext4
