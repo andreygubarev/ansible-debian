@@ -14,6 +14,9 @@
         delay: 5
         timeout: 300
 
+    - name: Gather facts
+      ansible.builtin.setup:
+
     - name: "Include root_filesystem"
       ansible.builtin.include_role:
         name: "root_filesystem"
