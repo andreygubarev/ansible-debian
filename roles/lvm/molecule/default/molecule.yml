@@ -5,10 +5,11 @@ driver:
   name: molecule-qemu
 platforms:
   - name: debian-bullseye-arm64
-    image: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-arm64.qcow2
-    image_checksum: sha512:https://cloud.debian.org/images/cloud/bullseye/latest/SHA512SUMS
     image_arch: aarch64
-    vm_network: vmnet-shared
+    image_url: https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-arm64.qcow2
+    image_checksum: sha512:https://cloud.debian.org/images/cloud/bullseye/latest/SHA512SUMS
+    network_mode: vmnet-shared
+    vm_memory: 1024
 provisioner:
   name: ansible
   inventory:
@@ -19,5 +20,10 @@ provisioner:
         root_filesystem_size: 2G
         allocate_freespace_device: /dev/vdb
         lvm_physical_volume: /dev/vdb2
+        lvm_logical_volumes:
+          - name: lv0
+            size: 1G
+          - name: lv1
+            size: 1G
 verifier:
   name: testinfra
