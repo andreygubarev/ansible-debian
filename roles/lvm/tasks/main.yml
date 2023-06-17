@@ -37,13 +37,24 @@
     vg: "{{ lvm_volume_group }}"
     pvs: "{{ lvm_physical_volume }}"
 
+- name: Assert LV names are unique
+  ansible.builtin.assert:
+    that:
+      - lvm_logical_volumes | map(attribute='name') | list | unique | length == lvm_logical_volumes | length
+
 - name: Create LV
   community.general.lvol:
     vg: "{{ lvm_volume_group }}"
-    lv: "{{ lvm_logical_volume }}"
-    size: "{{ lvm_logical_volume_size }}"
+    lv: "{{ item.name }}"
+    size: "{{ item.size }}"
     state: present
+  loop: "{{ lvm_logical_volumes }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Print LV info
   ansible.builtin.debug:
-    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ lvm_logical_volume }}"
+    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ item.name }}"
+  loop: "{{ lvm_logical_volumes }}"
+  loop_control:
+    label: "{{ item.name }}"
