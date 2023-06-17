@@ -13,3 +13,18 @@
       ansible.builtin.wait_for_connection:
         delay: 5
         timeout: 300
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: "Include root_filesystem"
+      ansible.builtin.include_role:
+        name: "root_filesystem"
+
+    - name: "Include allocate_freespace"
+      ansible.builtin.include_role:
+        name: "allocate_freespace"
+
+    - name: "Include lvm"
+      ansible.builtin.include_role:
+        name: "lvm"
