@@ -1,5 +1,5 @@
 ---
-- name: Create filesystem on LUKS volume
+- name: Create filesystem on volume
   community.general.filesystem:
     dev: "{{ lvm_mountpoint_volume }}"
     fstype: "{{ lvm_mountpoint_filesystem }}"
