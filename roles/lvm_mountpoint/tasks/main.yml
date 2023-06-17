@@ -1,1 +1,12 @@
 ---
+- name: Check if mountpoint exists
+  ansible.builtin.command: mountpoint -q {{ lvm_mountpoint_path }}
+  changed_when: false
+  ignore_errors: true
+  register: lvm_mountpoint_state
+
+- name: Creat mountpoint
+  when: lvm_mountpoint_state.rc != 0
+  block:
+    - name: Include tasks that stop services
+      ansible.builtin.include_tasks: 01-stop.yml
