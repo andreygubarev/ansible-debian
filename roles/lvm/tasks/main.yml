@@ -50,7 +50,7 @@
 
 - name: Print LV info
   ansible.builtin.debug:
-    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ item.name }}"
+    msg: "Logical volume: /dev/{{ lvm_volume_group }}/{{ item.name }}"
   loop: "{{ lvm_logical_volumes }}"
   loop_control:
     label: "{{ item.name }}"
