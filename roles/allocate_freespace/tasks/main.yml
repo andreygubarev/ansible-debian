@@ -17,10 +17,6 @@
     unit: MB
   register: allocate_freespace_device_info
 
-- name: Print device information
-  ansible.builtin.debug:
-    msg: "{{ allocate_freespace_device_info }}"
-
 - name: Calculate the available contiguous free space
   ansible.builtin.set_fact:
     allocate_freespace_space_available: "{{ (allocate_freespace_device_info.disk.size - allocate_freespace_device_info.partitions[-1]['end']) | round(2, 'floor') }}"
@@ -45,3 +41,12 @@
     - name: Print the new partition information
       ansible.builtin.debug:
         msg: "Created a new partition: {{ allocate_freespace_device }}{{ allocate_freespace_partition.stdout }}"
+
+    - name: Set fact about the new partition
+      ansible.builtin.set_fact:
+        allocate_freespace_partition:
+          path: "{{ allocate_freespace_device }}{{ allocate_freespace_partition.stdout }}"
+
+- name: Set fact about the new partition
+  ansible.builtin.set_fact:
+    allocate_freespace_partition: "{{ allocate_freespace_partition.path if not ( allocate_freespace_partition is skipped ) else '' }}"
