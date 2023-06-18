@@ -10,32 +10,29 @@
     state: present
     install_recommends: false
 
-- name: Check if PV device exists
-  ansible.builtin.command: lsblk {{ lvm_physical_volume }}
-  register: lvm_physical_volume_device
-  failed_when: false
-  changed_when: false
-
-- name: Assert PV device exists
-  ansible.builtin.assert:
-    that:
-      - lvm_physical_volume_device.rc == 0
-
-- name: Check if PV exists
-  ansible.builtin.command: pvs {{ lvm_physical_volume }} --noheadings
-  register: lvm_pvs
-  failed_when: false
-  changed_when: false
-
-- name: Create PV
-  ansible.builtin.command: pvcreate {{ lvm_physical_volume }}
-  changed_when: false
-  when: lvm_pvs.rc != 0
-
 - name: Create VG
-  community.general.lvg:
-    vg: "{{ lvm_volume_group }}"
-    pvs: "{{ lvm_physical_volume }}"
+  when: lvm_physical_volume != ''
+  block:
+    - name: Check if PV device exists
+      ansible.builtin.command: lsblk {{ lvm_physical_volume }}
+      register: lvm_physical_volume_device
+      failed_when: false
+      changed_when: false
+
+    - name: Assert PV device exists
+      ansible.builtin.assert:
+        that:
+          - lvm_physical_volume_device.rc == 0
+
+    - name: Create VG
+      community.general.lvg:
+        vg: "{{ lvm_volume_group }}"
+        pvs:
+          - "{{ lvm_physical_volume }}"
+
+- name: Set fact about the new VG
+  ansible.builtin.set_fact:
+    lvm_volume_group: "{{ lvm_volume_group }}"
 
 - name: Assert LV names are unique
   ansible.builtin.assert:
@@ -55,7 +52,7 @@
 
 - name: Print LV info
   ansible.builtin.debug:
-    msg: "Logical volume: /dev/mapper/{{ lvm_volume_group }}-{{ item.name }}"
+    msg: "Logical volume: /dev/{{ lvm_volume_group }}/{{ item.name }}"
   loop: "{{ lvm_logical_volumes }}"
   loop_control:
     label: "{{ item.name }}"

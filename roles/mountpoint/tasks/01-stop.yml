@@ -6,14 +6,15 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: root_filesystem_systemd_sockets
+  register: mountpoint_systemd_sockets
 
 - name: Stop systemd running sockets
   ansible.builtin.systemd:
     name: "{{ mountpoint_systemd_socket }}"
     state: stopped
-  loop: "{{ root_filesystem_systemd_sockets.stdout_lines }}"
-  loop_var: mountpoint_systemd_socket
+  loop: "{{ mountpoint_systemd_sockets.stdout_lines }}"
+  loop_control:
+    loop_var: mountpoint_systemd_socket
 
 - name: Get systemd running services
   ansible.builtin.shell: |
@@ -22,14 +23,15 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: root_filesystem_systemd_services
+  register: mountpoint_systemd_services
 
 - name: Stop systemd running services
   ansible.builtin.systemd:
     name: "{{ mountpoint_systemd_service }}"
     state: stopped
-  loop: "{{ root_filesystem_systemd_services.stdout_lines }}"
-  loop_var: mountpoint_systemd_service
+  loop: "{{ mountpoint_systemd_services.stdout_lines }}"
+  loop_control:
+    loop_var: mountpoint_systemd_service
 
 - name: Get systemd running timers
   ansible.builtin.shell: |
@@ -38,11 +40,12 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: root_filesystem_systemd_timers
+  register: mountpoint_systemd_timers
 
 - name: Stop systemd running timers
   ansible.builtin.systemd:
     name: "{{ mountpoint_systemd_timer }}"
     state: stopped
-  loop: "{{ root_filesystem_systemd_timers.stdout_lines }}"
-  loop_var: mountpoint_systemd_timer
+  loop: "{{ mountpoint_systemd_timers.stdout_lines }}"
+  loop_control:
+    loop_var: mountpoint_systemd_timer
