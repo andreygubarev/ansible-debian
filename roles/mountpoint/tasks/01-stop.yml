@@ -13,7 +13,8 @@
     name: "{{ mountpoint_systemd_socket }}"
     state: stopped
   loop: "{{ root_filesystem_systemd_sockets.stdout_lines }}"
-  loop_var: mountpoint_systemd_socket
+  loop_control:
+    loop_var: mountpoint_systemd_socket
 
 - name: Get systemd running services
   ansible.builtin.shell: |
@@ -29,7 +30,8 @@
     name: "{{ mountpoint_systemd_service }}"
     state: stopped
   loop: "{{ root_filesystem_systemd_services.stdout_lines }}"
-  loop_var: mountpoint_systemd_service
+  loop_control:
+    loop_var: mountpoint_systemd_service
 
 - name: Get systemd running timers
   ansible.builtin.shell: |
@@ -45,4 +47,5 @@
     name: "{{ mountpoint_systemd_timer }}"
     state: stopped
   loop: "{{ root_filesystem_systemd_timers.stdout_lines }}"
-  loop_var: mountpoint_systemd_timer
+  loop_control:
+    loop_var: mountpoint_systemd_timer
