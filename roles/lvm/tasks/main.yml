@@ -32,6 +32,10 @@
         pvs:
           - "{{ lvm_physical_volume }}"
 
+- name: Set fact about the new VG
+  ansible.builtin.set_fact:
+    lvm_volume_group: "{{ lvm_volume_group }}"
+
 - name: Assert LV names are unique
   ansible.builtin.assert:
     that:
