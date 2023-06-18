@@ -24,6 +24,6 @@ provisioner:
           - name: lv0
             size: 1G
           - name: lv1
-            size: 1G
+            size: 100%FREE
 verifier:
   name: testinfra

@@ -48,6 +48,7 @@
     lv: "{{ item.name }}"
     size: "{{ item.size }}"
     state: present
+    shrink: false
   loop: "{{ lvm_logical_volumes }}"
   loop_control:
     label: "{{ item.name }}"
