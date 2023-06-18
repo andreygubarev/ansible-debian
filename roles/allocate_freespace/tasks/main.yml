@@ -31,7 +31,12 @@
     - name: Create a new partition using fdisk
       ansible.builtin.shell: |
         set -euo pipefail
-        echo -e "n\n\n\n\nw" | fdisk {{ allocate_freespace_device }} | grep 'Created a new partition' | awk '{print $5}'
+        partition_table_type=$(parted {{ allocate_freespace_device }} print | grep 'Partition Table' | awk '{print $3}')
+        if [ "${partition_table_type}" = "gpt" ]; then
+          echo -e "n\n\n\n\nw" | fdisk {{ allocate_freespace_device }} | grep 'Created a new partition' | awk '{print $5}'
+        else
+          echo -e "n\np\n\n\n\nw" | fdisk {{ allocate_freespace_device }} | grep 'Created a new partition' | awk '{print $5}'
+        fi
       changed_when: true
       register: allocate_freespace_partition
       args:
