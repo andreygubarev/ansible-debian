@@ -10,8 +10,6 @@
     state: present
     install_recommends: false
 
-- debug: var=lvm_physical_volume
-
 - name: Create VG
   when: lvm_physical_volume != ''
   block:

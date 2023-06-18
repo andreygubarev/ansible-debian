@@ -49,4 +49,4 @@
 
 - name: Set fact about the new partition
   ansible.builtin.set_fact:
-    allocate_freespace_partition: "{{ allocate_freespace_partition.path if not ( allocate_freespace_partition is skipped ) else '' }}"
+    allocate_freespace_partition: "{{ allocate_freespace_partition.path if not (allocate_freespace_partition is skipped) else '' }}"
