@@ -1,5 +1,5 @@
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
-MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
+MAKEFILE_DIR := $(realpath $(dir $(MAKEFILE_PATH)))
 PYTHON_VENV ?= $(MAKEFILE_DIR)/.venv
 PYTHON_BIN := . $(PYTHON_VENV)/bin/activate && python3
 PYTHON_PIP := $(PYTHON_BIN) -m pip
@@ -33,7 +33,10 @@ $(ANSIBLE_ROLES): $(PYTHON_VENV)
 	cd $@ && $(ANSIBLE_MOLECULE) test
 
 .PHONY: test
-test: $(PYTHON_VENV) $(ANSIBLE_ROLES) build  ## Run tests
+test: $(ANSIBLE_ROLES)  ## Run tests
+
+.PHONY: install
+install: $(PYTHON_VENV) build ## Install collection
 	$(ANSIBLE_GALAXY) collection install *.tar.gz
 
 .PHONY: release

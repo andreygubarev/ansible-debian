@@ -7,7 +7,7 @@ readme: README.md
 authors:
   - Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
 
-description: Ansible collection for debian configuration
+description: Ansible collection for Debian configuration
 license_file: LICENSE
 
 tags:
