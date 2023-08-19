@@ -25,6 +25,10 @@ format: $(PYTHON_VENV) ## Automatically format the source code
 build: format ## Build collection archive
 	$(ANSIBLE_GALAXY) collection build --force
 
+.PHONY: test
+test: build ## Run tests
+	$(ANSIBLE_GALAXY) collection install *.tar.gz
+
 .PHONY: release
 release: clean build ## Publish collection
 	$(ANSIBLE_GALAXY) collection publish *.tar.gz --api-key $(GALAXY_API_KEY)
