@@ -15,7 +15,6 @@
   },
   "yaml.format.enable": true,
   "yaml.validate": true,
-  // "ansible-lint.config": ".ansible-lint",
   "git.ignoreLimitWarning": true,
   "git.autofetch": true,
   "git.enableSmartCommit": true,
