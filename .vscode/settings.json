@@ -18,6 +18,7 @@
   "git.ignoreLimitWarning": true,
   "git.autofetch": true,
   "git.enableSmartCommit": true,
+  "python.terminal.activateEnvironment": true,
   "terminal.integrated.env.linux": {
     "ANSIBLE_NOCOWS": "1"
   },

@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "ms-vscode.makefile-tools",
     "redhat.ansible",
     "redhat.vscode-yaml",
   ]
