@@ -1,33 +1,43 @@
-ANSIBLE_VIRTUALENV ?= .venv
-ANSIBLE_PYTHON := . $(ANSIBLE_VIRTUALENV)/bin/activate && python3
-ANSIBLE_PIP := $(ANSIBLE_PYTHON) -m pip
-ANSIBLE_LINT := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-lint
-ANSIBLE_GALAXY := . $(ANSIBLE_VIRTUALENV)/bin/activate && ansible-galaxy
+MAKEFILE_DIR := $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
+PYTHON_VENV ?= $(MAKEFILE_DIR)/.venv
+PYTHON_BIN := . $(PYTHON_VENV)/bin/activate && python3
+PYTHON_PIP := $(PYTHON_BIN) -m pip
+ANSIBLE_GALAXY := . $(PYTHON_VENV)/bin/activate && ansible-galaxy
+ANSIBLE_LINT := . $(PYTHON_VENV)/bin/activate && ansible-lint
+ANSIBLE_MOLECULE := . $(PYTHON_VENV)/bin/activate && molecule
 
 .PHONY: help
-help: ## Show this help
+help: ## Brief overview of available targets and their descriptions
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-$(ANSIBLE_VIRTUALENV):
-	python3 -m venv $(ANSIBLE_VIRTUALENV)
-	$(ANSIBLE_PIP) install 'setuptools>=45.0.0' wheel
-	$(ANSIBLE_PIP) install -r requirements.txt
+.PHONY: clean
+clean: ## Clean up the build artifacts, object files, executables, and any other generated files
+	rm -rf $(PYTHON_VENV) *.tar.gz
 
-.PHONY: virtualenv
-virtualenv: $(ANSIBLE_VIRTUALENV) ## Create local environment
+$(PYTHON_VENV):
+	python3 -m venv $(PYTHON_VENV)
+	$(PYTHON_PIP) install 'setuptools>=45.0.0' wheel
+	$(PYTHON_PIP) install -r requirements.txt
 
-.PHONY: lint
-lint: virtualenv ## Lint Ansible code
+.PHONY: format
+format: $(PYTHON_VENV) ## Automatically format the source code
 	@$(ANSIBLE_LINT) -v
 
 .PHONY: build
-build: lint ## Build collection archive
+build: format ## Build collection archive
 	$(ANSIBLE_GALAXY) collection build --force
 
-.PHONY: publish
-publish: clean build ## Publish collection
-	$(ANSIBLE_GALAXY) collection publish *.tar.gz --api-key $(GALAXY_API_KEY)
+ANSIBLE_ROLES := $(shell find roles -mindepth 1 -maxdepth 1 -type d)
+$(ANSIBLE_ROLES): $(PYTHON_VENV)
+	cd $@ && $(ANSIBLE_MOLECULE) test
 
-.PHONY: clean
-clean: ## Remove temporary files
-	rm -rf $(ANSIBLE_VIRTUALENV) *.tar.gz
+.PHONY: test
+test: $(ANSIBLE_ROLES)  ## Run tests
+
+.PHONY: install
+install: $(PYTHON_VENV) build ## Install collection
+	$(ANSIBLE_GALAXY) collection install *.tar.gz
+
+.PHONY: release
+release: clean build ## Publish collection
+	$(ANSIBLE_GALAXY) collection publish *.tar.gz --api-key $(GALAXY_API_KEY)
