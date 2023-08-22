@@ -1,5 +1,4 @@
-MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
-MAKEFILE_DIR := $(realpath $(dir $(MAKEFILE_PATH)))
+MAKEFILE_DIR := $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PYTHON_VENV ?= $(MAKEFILE_DIR)/.venv
 PYTHON_BIN := . $(PYTHON_VENV)/bin/activate && python3
 PYTHON_PIP := $(PYTHON_BIN) -m pip
