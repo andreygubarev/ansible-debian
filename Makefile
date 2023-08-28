@@ -9,11 +9,11 @@ help: ## Brief overview of available targets and their descriptions
 ANSIBLE_GALAXY := ansible-galaxy
 ANSIBLE_LINT := ansible-lint
 ANSIBLE_MOLECULE := molecule
-
 ANSIBLE_ROLES := $(shell find roles -mindepth 1 -maxdepth 1 -type d)
+
+.PHONY: $(ANSIBLE_ROLES)
 $(ANSIBLE_ROLES):
 	cd $@ && $(ANSIBLE_MOLECULE) test
-.PHONY: $(ANSIBLE_ROLES)
 
 .PHONY: format
 format: ## Automatically format the source code
