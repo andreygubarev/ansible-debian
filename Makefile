@@ -25,6 +25,7 @@ build: format ## Build collection archive
 ANSIBLE_ROLES := $(shell find roles -mindepth 1 -maxdepth 1 -type d)
 $(ANSIBLE_ROLES):
 	cd $@ && $(ANSIBLE_MOLECULE) test
+.PHONY: $(ANSIBLE_ROLES)
 
 .PHONY: test
 test: $(ANSIBLE_ROLES)  ## Run tests
