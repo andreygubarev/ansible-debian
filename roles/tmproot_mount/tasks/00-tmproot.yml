@@ -71,7 +71,7 @@
 - name: Get systemd running services
   ansible.builtin.shell: |
     set -euo pipefail
-    systemctl | ( grep 'running' || true ) | ( grep 'service' || true ) | ( grep -v 'ssh.service' || true ) | awk '{print $1}'
+    systemctl | ( grep 'running' || true ) | ( grep 'service' || true ) | ( grep -vE '(systemd-networkd|ssh).service' || true ) | awk '{print $1}'
   args:
     executable: /bin/bash
   changed_when: false
