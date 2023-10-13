@@ -42,6 +42,9 @@ Usage example:
 
 Roles are necessary to address the issue of modifying the root partition without rebooting the instance. Typically, OS images have a single root partition, which cannot be modified without a reboot. This poses a challenge for automation since it requires manual intervention. The `tmproot_*` roles resolve this problem by mounting a temporary root partition and transferring the root to it. As a result, the root partition can be modified without having to reboot the instance.
 
+Caveats:
+- Roles require `root` user to be able to login via SSH. This is required to be able to pivot root and temporary root. Role uses `root` user `authorized_keys` to login via SSH.
+
 # Reference
 
 - [Ansible Galaxy](https://galaxy.ansible.com/andreygubarev/debian) - Find more information and download the collection.

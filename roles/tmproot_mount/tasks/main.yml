@@ -2,6 +2,7 @@
 - name: Assert variables are defined
   ansible.builtin.assert:
     that:
+      - ansible_user == 'root'
       - tmproot_mutex is defined
       - tmproot_tmproot is defined
 
