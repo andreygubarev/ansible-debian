@@ -1,0 +1,18 @@
+---
+- name: Get tmproot state
+  ansible.builtin.stat:
+    path: /var/lock/tmproot
+  register: tmproot_state_tmproot
+
+- name: Setup temporary root
+  ansible.builtin.include_tasks: 00-tmproot.yml
+  when: not tmproot_state_tmproot.stat.exists
+
+- name: Get root state
+  ansible.builtin.stat:
+    path: /mnt/root/bin
+  register: tmproot_state_root
+
+- name: Unmount root
+  ansible.builtin.include_tasks: 01-unmount.yml
+  when: tmproot_state_root.stat.exists
