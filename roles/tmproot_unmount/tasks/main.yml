@@ -16,4 +16,3 @@
 - name: Mount root
   ansible.builtin.include_tasks: 00-mount.yml
   when: tmproot_mutex_state.stat.exists
-
