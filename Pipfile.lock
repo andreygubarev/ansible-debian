@@ -488,11 +488,11 @@
         },
         "molecule-qemu": {
             "hashes": [
-                "sha256:463678fd17d8dbe80cf8d9c0d8b55c48e3e807dd8aa1e058dde47bcdd6b27645",
-                "sha256:a2fce53ea63493b7e589be68f5fe592db9e78baa4f7a58398d9abdbcd9a91b92"
+                "sha256:0daeb0059bdafef594844966bf6403234bb513c1d476ac0e0905373542159639",
+                "sha256:93829a19438bcbdc2a9a3040c0b9aed0e61e78eb761b94002befd10f52687405"
             ],
             "index": "pypi",
-            "version": "==0.5.6"
+            "version": "==0.5.7"
         },
         "mypy-extensions": {
             "hashes": [
