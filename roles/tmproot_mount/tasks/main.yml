@@ -20,5 +20,5 @@
   register: tmproot_state_root
 
 - name: Unmount root
-  ansible.builtin.include_tasks: 01-unmount.yml
+  ansible.builtin.include_tasks: 10-unmount.yml
   when: tmproot_state_root.stat.exists
