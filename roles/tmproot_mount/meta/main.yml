@@ -1,6 +1,6 @@
 galaxy_info:
   author: Andrey Gubarev <andrey@andreygubarev.com> (andreygubarev.com)
-  description: Ansible Role to mount tmpfs on /
+  description: Ansible Role to mount temporary root filesystem
   company: andreygubarev
 
   license: MIT
