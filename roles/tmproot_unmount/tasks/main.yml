@@ -2,7 +2,7 @@
 - name: Mount root partition
   ansible.posix.mount:
     path: /mnt/root
-    src: "{{ tmproot_partition }}"
+    src: "{{ tmproot_device }}"
     fstype: ext4
     state: ephemeral
     opts: defaults
@@ -17,7 +17,7 @@
     mount --make-rprivate /
     pivot_root /mnt/root /mnt/root/{{ tmproot_tmproot }}
     for i in dev proc sys run; do mount --move {{ tmproot_tmproot }}/$i /$i; done
-    rm /var/lock/tmproot
+    rm {{ tmproot_mutex}}
 
     systemctl restart sshd
     systemctl daemon-reexec

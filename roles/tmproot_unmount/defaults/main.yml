@@ -1,3 +1,4 @@
 ---
+tmproot_mutex: /var/lock/tmproot
 tmproot_tmproot: /mnt/tmproot
-tmproot_partition:
+tmproot_device:
