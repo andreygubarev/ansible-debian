@@ -1,12 +1,17 @@
 ---
+- name: Assert variables are defined
+  ansible.builtin.assert:
+    that:
+      - tmproot_mutex is defined
+
 - name: Get tmproot state
   ansible.builtin.stat:
-    path: /var/lock/tmproot
-  register: tmproot_state_tmproot
+    path: "{{ tmproot_mutex }}"
+  register: tmproot_mutex_state
 
 - name: Setup temporary root
   ansible.builtin.include_tasks: 00-tmproot.yml
-  when: not tmproot_state_tmproot.stat.exists
+  when: not tmproot_mutex_state.stat.exists
 
 - name: Get root state
   ansible.builtin.stat:

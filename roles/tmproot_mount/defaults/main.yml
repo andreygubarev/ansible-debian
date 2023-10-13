@@ -1,2 +1,3 @@
 ---
+tmproot_mutex: /var/lock/tmproot
 tmproot_tmproot: /mnt/tmproot
