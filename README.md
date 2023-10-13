@@ -44,6 +44,7 @@ Roles are necessary to address the issue of modifying the root partition without
 
 Caveats:
 - Roles require `root` user to be able to login via SSH. This is required to be able to pivot root and temporary root. Role uses `root` user `authorized_keys` to login via SSH.
+- Roles require at least 1GB of RAM to be able to mount tmpfs. This is required to be able to perform `debootstrap` into tmpfs.
 
 # Reference
 
