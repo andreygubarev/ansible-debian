@@ -18,8 +18,8 @@ Role `tmproot_mount` mounts tmpfs to root partition and moves root to tmpfs. Rol
 
 `tmproot_*` roles implement the following logic:
 1.1 Mount tmpfs to `/mnt/tmproot` and performs `debootstrap` into it
-1.2 Copies SSH keys from root partition to `/mnt/tmproot`
-1.3 Stops all running services
+1.2 Copies SSH keys from root partition to `/mnt/tmproot` for `root` user
+1.3 Stops all running services (except SSH and NetworkManager)
 1.4 Pivot root and temporary root
 1.5 Starts SSH server
 1.6 Unmounts root partition
