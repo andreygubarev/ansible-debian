@@ -27,6 +27,19 @@ Role `tmproot_mount` mounts tmpfs to root partition and moves root to tmpfs. Rol
 2.2 Pivot temporary root and root
 2.3 Starts all services
 
+Usage example:
+```yaml
+- name: Temporary root
+  hosts: all
+  become: true
+  roles:
+    - role: tmproot_mount
+    # do something with root partition
+    - role: tmproot_unmount
+      vars:
+        tmproot_partition: /dev/vda2
+```
+
 # Reference
 
 - [Ansible Galaxy](https://galaxy.ansible.com/andreygubarev/debian) - Find more information and download the collection.
