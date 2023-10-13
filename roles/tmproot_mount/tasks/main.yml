@@ -1,0 +1,25 @@
+---
+- name: Assert variables are defined
+  ansible.builtin.assert:
+    that:
+      - ansible_user == 'root'
+      - tmproot_mutex is defined
+      - tmproot_tmproot is defined
+
+- name: Get tmproot state
+  ansible.builtin.stat:
+    path: "{{ tmproot_mutex }}"
+  register: tmproot_mutex_state
+
+- name: Setup temporary root
+  ansible.builtin.include_tasks: 00-tmproot.yml
+  when: not tmproot_mutex_state.stat.exists
+
+- name: Get root state
+  ansible.builtin.stat:
+    path: /mnt/root/bin
+  register: tmproot_state_root
+
+- name: Unmount root
+  ansible.builtin.include_tasks: 10-unmount.yml
+  when: tmproot_state_root.stat.exists

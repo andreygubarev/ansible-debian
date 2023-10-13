@@ -1,0 +1,29 @@
+---
+- name: Terminate blocking processes
+  ansible.builtin.shell: |
+    set -euo pipefail
+    for i in $(lsof | ( grep '/mnt/root' || true ) | awk '{print $2}' | sort -u); do kill -9 $i; done
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Wait for blocking processes to terminate
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Unmount root (efi)  # noqa: ignore-errors
+  ansible.posix.mount:
+    path: /mnt/root/boot/efi
+    state: unmounted
+  ignore_errors: true
+
+- name: Unmount root
+  ansible.posix.mount:
+    path: /mnt/root
+    state: unmounted
+
+- name: Wait for root to unmount
+  ansible.builtin.wait_for:
+    path: /mnt/root/bin
+    state: absent
+    timeout: 15

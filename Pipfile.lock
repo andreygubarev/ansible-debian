@@ -488,11 +488,11 @@
         },
         "molecule-qemu": {
             "hashes": [
-                "sha256:b3f03f8d9548ed81aa6d42f4eb48171b58d010a0d4e062e1e654ebe673c73657",
-                "sha256:bd3aff129b349c355054677f49c334ae4ffd402d72442b3dfb5db45902580eb4"
+                "sha256:0daeb0059bdafef594844966bf6403234bb513c1d476ac0e0905373542159639",
+                "sha256:93829a19438bcbdc2a9a3040c0b9aed0e61e78eb761b94002befd10f52687405"
             ],
             "index": "pypi",
-            "version": "==0.5.5"
+            "version": "==0.5.7"
         },
         "mypy-extensions": {
             "hashes": [
@@ -571,7 +571,7 @@
                 "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86",
                 "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==2.8.2"
         },
         "python-slugify": {
@@ -821,7 +821,7 @@
                 "sha256:f481f16baec5290e45aebdc2a5168ebc6d35189ae6fea7a58787613a25f6e875",
                 "sha256:fff3573c2db359f091e1589c3d7c5fc2f86f5bdb6f24252c2d8e539d4e45f412"
             ],
-            "markers": "python_version < '3.13' and platform_python_implementation == 'CPython'",
+            "markers": "platform_python_implementation == 'CPython' and python_version < '3.13'",
             "version": "==0.2.8"
         },
         "six": {
@@ -829,7 +829,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.16.0"
         },
         "subprocess-tee": {
