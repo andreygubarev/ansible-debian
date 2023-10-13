@@ -16,3 +16,7 @@
 
     - name: Gather facts
       ansible.builtin.setup:
+
+    - name: Include tmproot_mount role
+      ansible.builtin.include_role:
+        name: tmproot_mount

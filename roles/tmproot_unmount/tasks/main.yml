@@ -1,60 +1,19 @@
 ---
-- name: Mount root partition
-  ansible.posix.mount:
-    path: /mnt/root
-    src: "{{ tmproot_device }}"
-    fstype: ext4
-    state: ephemeral
-    opts: defaults
-  become: true
-  become_user: root
-  tags: [ partition, mount ]
+- name: Assert variables are defined
+  ansible.builtin.assert:
+    that:
+      - ansible_user == 'root'
+      - tmproot_mutex is defined
+      - tmproot_tmproot is defined
+      - tmproot_device is defined
+      - tmproot_device is match('^/dev/\w+$')
 
-- name: Pivot temorary root and root
-  ansible.builtin.shell: |
-    set -euo pipefail
+- name: Get tmproot state
+  ansible.builtin.stat:
+    path: "{{ tmproot_mutex }}"
+  register: tmproot_mutex_state
 
-    mount --make-rprivate /
-    pivot_root /mnt/root /mnt/root/{{ tmproot_tmproot }}
-    for i in dev proc sys run; do mount --move {{ tmproot_tmproot }}/$i /$i; done
-    rm {{ tmproot_mutex}}
+- name: Mount root
+  ansible.builtin.include_tasks: 00-mount.yml
+  when: tmproot_mutex_state.stat.exists
 
-    systemctl restart sshd
-    systemctl daemon-reexec
-  args:
-    executable: /bin/bash
-  changed_when: false
-
-- name: Wait for SSH connection
-  ansible.builtin.wait_for_connection:
-    delay: 5
-    timeout: 60
-
-- name: Reset SSH connection
-  ansible.builtin.meta: reset_connection
-
-- name: Unmount temporary root
-  ansible.posix.mount:
-    path: "{{ tmproot_tmproot }}"
-    state: unmounted
-
-- name: Mount present filesystems
-  ansible.builtin.shell: |
-    set -euo pipefail
-    mount -a
-    mount --make-rshared /
-  args:
-    executable: /bin/bash
-  changed_when: false
-
-- name: Restart systemd failed service  # noqa: command-instead-of-module
-  ansible.builtin.shell: |
-    set -euo pipefail
-    systemctl | ( grep 'failed' || true ) | awk '{ print $2 }' | xargs -r systemctl restart
-  args:
-    executable: /bin/bash
-  changed_when: false
-
-- name: Start systemd services  # noqa: command-instead-of-module
-  ansible.builtin.command: systemctl isolate default.target
-  changed_when: false
