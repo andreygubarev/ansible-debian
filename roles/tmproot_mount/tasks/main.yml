@@ -3,6 +3,7 @@
   ansible.builtin.assert:
     that:
       - tmproot_mutex is defined
+      - tmproot_tmproot is defined
 
 - name: Get tmproot state
   ansible.builtin.stat:
