@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 molecule = "<6.0.0,>=5.0.0"
-molecule-qemu = "<0.6.0,>=0.5.3"
+molecule-qemu = "<0.6.0,>=0.5.0"
 pytest-testinfra = "<9.0.0,>=8.0.0"
 ansible = ">=7.0.0"
 ansible-lint = "*"
