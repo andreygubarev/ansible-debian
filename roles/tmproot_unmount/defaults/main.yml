@@ -1,4 +1,4 @@
 ---
-tmproot_mutex: /var/lock/tmproot
-tmproot_tmproot: /mnt/tmproot
-tmproot_device:
+tmproot_mutex: /var/lock/tmproot  # noqa: var-naming[no-role-prefix]
+tmproot_tmproot: /mnt/tmproot  # noqa: var-naming[no-role-prefix]
+tmproot_device:  # noqa: var-naming[no-role-prefix]
